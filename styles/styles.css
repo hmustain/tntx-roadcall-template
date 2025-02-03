@@ -1,0 +1,41 @@
+/* Navbar styling */
+.navbar {
+    background-color: #000; /* black background */
+  }
+  
+  .navbar-nav .nav-link {
+    color: #fff; /* white text */
+    font-size: 16px;
+  }
+  
+  .navbar-nav .nav-link:hover {
+    color: #f8f9fa; /* slightly lighter hover color */
+  }
+  
+  .navbar-brand img {
+    width: 150px; /* adjust logo size */
+  }
+  
+  .navbar-toggler-icon {
+    background-color: #fff; /* white icon for toggler button */
+  }
+  
+  /* Center the bottom navbar links */
+  .bottom-links {
+    text-align: center;
+    margin-top: 20px;
+    background-color: #000; /* Ensure the background is the same as the navbar */
+    padding: 20px 0; /* Add some padding for spacing */
+  }
+  
+  .bottom-links a {
+    color: #fff; /* Make sure the text is white */
+    margin: 0 10px;
+    font-size: 16px; /* Adjust the font size if necessary */
+    text-decoration: none;
+  }
+  
+  .bottom-links a:hover {
+    color: #f8f9fa; /* Slightly lighter hover color */
+  }
+  
