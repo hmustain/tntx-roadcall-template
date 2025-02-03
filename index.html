@@ -16,12 +16,12 @@
             <!-- Time & Date -->
             <div class="mb-3 row">
                 <div class="col-md-6">
-                    <label for="time" class="form-label">Time</label>
-                    <input type="time" id="time" class="form-control">
-                </div>
-                <div class="col-md-6">
                     <label for="date" class="form-label">Date</label>
                     <input type="date" id="date" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label for="time" class="form-label">Time</label>
+                    <input type="time" id="time" class="form-control">
                 </div>
             </div>
 
@@ -51,18 +51,19 @@
 
             <!-- Driver Information -->
             <div class="mb-3 row">
-                <div class="col-md-6">
+                <div class="mb-3">
                     <label for="driverName" class="form-label">Driver's Name</label>
                     <input type="text" id="driverName" class="form-control" placeholder="Enter driver's name">
                 </div>
-                <div class="col-md-6">
+                <!-- Commenting out section asking if this is a day/night driver for now h.mustain -->
+                <!-- <div class="col-md-6">
                     <label for="driverShift" class="form-label">Day/Night Driver</label>
                     <select id="driverShift" class="form-select">
                         <option value="">Choose...</option>
                         <option value="day">Day</option>
                         <option value="night">Night</option>
                     </select>
-                </div>
+                </div> -->
             </div>
 
             <!-- Vehicle Information -->
@@ -91,8 +92,12 @@
 
             <!-- Unit Affected -->
             <div class="mb-3">
-                <label for="unitAffected" class="form-label">Unit Affected</label>
-                <input type="text" id="unitAffected" class="form-control" placeholder="Enter affected unit">
+                <label class="form-label">Unit Affected</label>
+                <select id="unitAffected" class="form-select">
+                    <option value="tractor">Tractor</option>
+                    <option value="trailer">Trailer</option>
+                    <option value="both">Both</option>
+                </select>
             </div>
 
             <!-- Picture Requests -->
