@@ -38,4 +38,8 @@
   .bottom-links a:hover {
     color: #f8f9fa; /* Slightly lighter hover color */
   }
+
+  body {
+    padding-top: 75px; /* Adjust based on navbar height */
+  }
   
