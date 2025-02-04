@@ -118,210 +118,263 @@
       <h2 class="text-center mt-5 mb-4">Road Call Service Form</h2>
 
       <form id="roadCallForm">
-        <!-- 1. Company Selection -->
-        <div class="mb-3">
-          <label for="company" class="form-label">Choose a Company</label>
-          <select id="company" class="form-select">
-            <option value="" disabled selected>Please select a company...</option>
-            <option value="bigm">Big M</option>
-            <option value="cctlandshark">CCT/Landshark</option>
-            <option value="fedex">FedEx</option>
-            <option value="hodges">Hodges</option>
-            <option value="lewisexpress">Lewis Express</option>
-            <option value="melton">Melton</option>
-            <option value="royal">Royal</option>
-            <option value="smt">SMT</option>
-            <option value="sky">Sky</option>
-            <option value="watkins">Watkins</option>
-            <option value="wilson">Wilson</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-      
-        <!-- FedEx-Specific Questions (only if company is FedEx) -->
-        <div class="mb-3" id="fedexDetails" style="display: none;">
+        <!-- Step 1: Choose a Company -->
+        <div class="form-step" id="step-1">
           <div class="mb-3">
-            <label for="fedexName" class="form-label">FedEx Employee Name</label>
-            <input type="text" id="fedexName" class="form-control" placeholder="Enter employee name">
-          </div>
-          <div class="mb-3">
-            <label for="fedexId" class="form-label">Employee ID</label>
-            <input type="text" id="fedexId" class="form-control" placeholder="Enter employee ID">
-          </div>
-          <div class="mb-3">
-            <label for="fedexHub" class="form-label">Hub</label>
-            <input type="text" id="fedexHub" class="form-control" placeholder="Enter hub">
-          </div>
-        </div>
-      
-        <!-- 2. Called In By -->
-        <div class="mb-3 row">
-          <div class="col-md-6">
-            <label for="callerName" class="form-label">Called In By (Name)</label>
-            <input type="text" id="callerName" class="form-control" placeholder="Enter person's name">
-          </div>
-          <div class="col-md-6">
-            <label for="callerPhone" class="form-label">Phone Number</label>
-            <input type="tel" id="callerPhone" class="form-control" placeholder="Enter phone number">
-          </div>
-        </div>
-      
-        <!-- 3. Driver's Name -->
-        <div class="mb-3">
-          <label for="driverName" class="form-label">Driver's Name</label>
-          <input type="text" id="driverName" class="form-control" placeholder="Enter driver's name">
-        </div>
-      
-        <!-- 4. Tractor Details -->
-        <div class="mb-3 row">
-          <div class="col-md-6">
-            <label for="truck" class="form-label">Truck Number</label>
-            <input type="text" id="truck" class="form-control" placeholder="Enter truck number">
-          </div>
-          <div class="col-md-6">
-            <label for="mileage" class="form-label">Mileage / Last 8 of VIN</label>
-            <input type="text" id="mileage" class="form-control" placeholder="Enter mileage/VIN">
-          </div>
-        </div>
-      
-        <!-- 5. Trailer Details -->
-        <div class="mb-3 row">
-          <div class="col-md-6">
-            <label for="trailer" class="form-label">Trailer Number</label>
-            <input type="text" id="trailer" class="form-control" placeholder="Enter trailer number">
-          </div>
-          <div class="col-md-6">
-            <label for="loadStatus" class="form-label">Loaded or Empty?</label>
-            <select id="loadStatus" class="form-select">
-              <option value="" disabled selected>Please choose...</option>
-              <option value="empty">Empty</option>
-              <option value="loaded">Loaded</option>
+            <label for="company" class="form-label">Choose a Company</label>
+            <select id="company" class="form-select">
+              <option value="" disabled selected>Please select a company...</option>
+              <option value="bigm">Big M</option>
+              <option value="cctlandshark">CCT/Landshark</option>
+              <option value="fedex">FedEx</option>
+              <option value="hodges">Hodges</option>
+              <option value="lewisexpress">Lewis Express</option>
+              <option value="melton">Melton</option>
+              <option value="royal">Royal</option>
+              <option value="smt">SMT</option>
+              <option value="sky">Sky</option>
+              <option value="watkins">Watkins</option>
+              <option value="wilson">Wilson</option>
+              <option value="other">Other</option>
             </select>
           </div>
-        </div>
-        <!-- Load Number: Only if Loaded -->
-        <div class="mb-3" id="loadNumberSection" style="display: none;">
-          <label for="loadNumber" class="form-label">What is their Load Number?</label>
-          <input type="text" id="loadNumber" class="form-control" placeholder="Enter load number">
-        </div>
-      
-        <!-- 6. Unit Affected -->
-        <div class="mb-3">
-          <label for="unitAffected" class="form-label">Unit Affected</label>
-          <select id="unitAffected" class="form-select">
-            <option value="tractor">Tractor</option>
-            <option value="trailer">Trailer</option>
-            <option value="both">Both</option>
-          </select>
-        </div>
-      
-        <!-- 7. Location Details -->
-        <div class="mb-3">
-          <label for="locationName" class="form-label">Location Name</label>
-          <input type="text" id="locationName" class="form-control" placeholder="Enter location name">
-        </div>
-        <div class="mb-3">
-          <label for="locationAddress" class="form-label">Location Address</label>
-          <input type="text" id="locationAddress" class="form-control" placeholder="Enter address">
-        </div>
-        <div class="mb-3">
-          <label for="referencePoints" class="form-label">Reference Points</label>
-          <input type="text" id="referencePoints" class="form-control" placeholder="Enter reference points">
+          <!-- FedEx-Specific Questions -->
+          <div id="fedexDetails" style="display: none;">
+            <div class="mb-3">
+              <label for="fedexName" class="form-label">FedEx Employee Name</label>
+              <input type="text" id="fedexName" class="form-control" placeholder="Enter employee name">
+            </div>
+            <div class="mb-3">
+              <label for="fedexId" class="form-label">Employee ID</label>
+              <input type="text" id="fedexId" class="form-control" placeholder="Enter employee ID">
+            </div>
+            <div class="mb-3">
+              <label for="fedexHub" class="form-label">Hub</label>
+              <input type="text" id="fedexHub" class="form-control" placeholder="Enter hub">
+            </div>
+          </div>
+          <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-primary next-step">Next</button>
+          </div>
         </div>
       
-        <!-- 8. Tire-Related Breakdown -->
-        <div class="mb-3">
-          <label for="tireBreakdown" class="form-label">Is this a tire-related breakdown?</label>
-          <select id="tireBreakdown" class="form-select">
-            <option value="" disabled selected>Please choose...</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
+        <!-- Step 2: Called In By (Name & Phone) -->
+        <div class="form-step" id="step-2" style="display: none;">
+          <div class="mb-3 row">
+            <div class="col-md-6">
+              <label for="callerName" class="form-label">Called In By (Name)</label>
+              <input type="text" id="callerName" class="form-control" placeholder="Enter person's name">
+            </div>
+            <div class="col-md-6">
+              <label for="callerPhone" class="form-label">Phone Number</label>
+              <input type="tel" id="callerPhone" class="form-control" placeholder="Enter phone number">
+            </div>
+          </div>
+          <div class="d-flex justify-content-between">
+            <button type="button" class="btn btn-secondary prev-step">Previous</button>
+            <button type="button" class="btn btn-primary next-step">Next</button>
+          </div>
         </div>
-        <!-- Tire-Related Questions: Only if Yes -->
-        <div id="tireQuestions" style="display: none;">
+      
+        <!-- Step 3: Driver's Name -->
+        <div class="form-step" id="step-3" style="display: none;">
           <div class="mb-3">
-            <label for="tireSize" class="form-label">Tire Size</label>
-            <input type="text" id="tireSize" class="form-control" placeholder="Enter tire size">
+            <label for="driverName" class="form-label">Driver's Name</label>
+            <input type="text" id="driverName" class="form-control" placeholder="Enter driver's name">
+          </div>
+          <div class="d-flex justify-content-between">
+            <button type="button" class="btn btn-secondary prev-step">Previous</button>
+            <button type="button" class="btn btn-primary next-step">Next</button>
+          </div>
+        </div>
+      
+        <!-- Step 4: Tractor Details -->
+        <div class="form-step" id="step-4" style="display: none;">
+          <div class="mb-3 row">
+            <div class="col-md-6">
+              <label for="truck" class="form-label">Truck Number</label>
+              <input type="text" id="truck" class="form-control" placeholder="Enter truck number">
+            </div>
+            <div class="col-md-6">
+              <label for="mileage" class="form-label">Mileage / Last 8 of VIN</label>
+              <input type="text" id="mileage" class="form-control" placeholder="Enter mileage/VIN">
+            </div>
+          </div>
+          <div class="d-flex justify-content-between">
+            <button type="button" class="btn btn-secondary prev-step">Previous</button>
+            <button type="button" class="btn btn-primary next-step">Next</button>
+          </div>
+        </div>
+      
+        <!-- Step 5: Trailer Details -->
+        <div class="form-step" id="step-5" style="display: none;">
+          <div class="mb-3 row">
+            <div class="col-md-6">
+              <label for="trailer" class="form-label">Trailer Number</label>
+              <input type="text" id="trailer" class="form-control" placeholder="Enter trailer number">
+            </div>
+            <div class="col-md-6">
+              <label for="loadStatus" class="form-label">Loaded or Empty?</label>
+              <select id="loadStatus" class="form-select">
+                <option value="" disabled selected>Please choose...</option>
+                <option value="empty">Empty</option>
+                <option value="loaded">Loaded</option>
+              </select>
+            </div>
+          </div>
+          <!-- Load Number: Only if Loaded -->
+          <div class="mb-3" id="loadNumberSection" style="display: none;">
+            <label for="loadNumber" class="form-label">What is their Load Number?</label>
+            <input type="text" id="loadNumber" class="form-control" placeholder="Enter load number">
           </div>
           <div class="mb-3">
-            <label for="tirePosition" class="form-label">Tire Position</label>
-            <input type="text" id="tirePosition" class="form-control" placeholder="Enter tire position">
-          </div>
-          <div class="mb-3">
-            <label for="spareTire" class="form-label">Spare (Yes/No)</label>
-            <select id="spareTire" class="form-select">
-              <option value="" disabled selected>Please choose...</option>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
+            <label for="unitAffected" class="form-label">Unit Affected</label>
+            <select id="unitAffected" class="form-select">
+              <option value="tractor">Tractor</option>
+              <option value="trailer">Trailer</option>
+              <option value="both">Both</option>
             </select>
           </div>
-          <div class="mb-3">
-            <label for="rimType" class="form-label">Rim Type</label>
-            <select id="rimType" class="form-select">
-              <option value="" disabled selected>Please choose...</option>
-              <option value="steel">Steel</option>
-              <option value="aluminum">Aluminum</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="damage" class="form-label">Any other damage? (e.g., Mudflap, Bracket, Rim)</label>
-            <select id="damage" class="form-select">
-              <option value="" disabled selected>Please choose...</option>
-              <option value="no">No</option>
-              <option value="yes">Yes</option>
-            </select>
-            <!-- Optionally, show a text field for damage details -->
-            <input type="text" id="damageDetails" class="form-control mt-2 d-none" placeholder="Describe the damage">
+          <div class="d-flex justify-content-between">
+            <button type="button" class="btn btn-secondary prev-step">Previous</button>
+            <button type="button" class="btn btn-primary next-step">Next</button>
           </div>
         </div>
       
-        <!-- 9. Breakdown Description -->
-        <div class="mb-3">
-          <label for="breakdownDesc" class="form-label">Description of Breakdown</label>
-          <textarea id="breakdownDesc" class="form-control" rows="3" placeholder="Enter description"></textarea>
+        <!-- Step 6: Location Details -->
+        <div class="form-step" id="step-6" style="display: none;">
+          <div class="mb-3">
+            <label for="locationName" class="form-label">Location Name</label>
+            <input type="text" id="locationName" class="form-control" placeholder="Enter location name">
+          </div>
+          <div class="mb-3">
+            <label for="locationAddress" class="form-label">Location Address</label>
+            <input type="text" id="locationAddress" class="form-control" placeholder="Enter address">
+          </div>
+          <div class="mb-3">
+            <label for="referencePoints" class="form-label">Reference Points</label>
+            <input type="text" id="referencePoints" class="form-control" placeholder="Enter reference points">
+          </div>
+          <div class="d-flex justify-content-between">
+            <button type="button" class="btn btn-secondary prev-step">Previous</button>
+            <button type="button" class="btn btn-primary next-step">Next</button>
+          </div>
         </div>
       
-        <!-- 10. Pictures -->
-        <div class="mb-3 row">
-          <div class="col-md-6">
-            <label for="picturesRequested" class="form-label">Pictures Requested</label>
-            <select id="picturesRequested" class="form-select">
+        <!-- Step 7: Tire-Related Breakdown -->
+        <div class="form-step" id="step-7" style="display: none;">
+          <div class="mb-3">
+            <label for="tireBreakdown" class="form-label">Is this a tire-related breakdown?</label>
+            <select id="tireBreakdown" class="form-select">
               <option value="" disabled selected>Please choose...</option>
               <option value="yes">Yes</option>
               <option value="no">No</option>
             </select>
           </div>
-          <div class="col-md-6">
-            <label for="picturesReceived" class="form-label">Pictures Received</label>
-            <select id="picturesReceived" class="form-select">
-              <option value="" disabled selected>Please choose...</option>
-              <option value="waiting">Waiting</option>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
-            </select>
+          <!-- Tire-Related Questions: Only if Yes -->
+          <div id="tireQuestions" style="display: none;">
+            <div class="mb-3">
+              <label for="tireSize" class="form-label">Tire Size</label>
+              <input type="text" id="tireSize" class="form-control" placeholder="Enter tire size">
+            </div>
+            <div class="mb-3">
+              <label for="tirePosition" class="form-label">Tire Position</label>
+              <input type="text" id="tirePosition" class="form-control" placeholder="Enter tire position">
+            </div>
+            <div class="mb-3">
+              <label for="spareTire" class="form-label">Spare (Yes/No)</label>
+              <select id="spareTire" class="form-select">
+                <option value="" disabled selected>Please choose...</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="rimType" class="form-label">Rim Type</label>
+              <select id="rimType" class="form-select">
+                <option value="" disabled selected>Please choose...</option>
+                <option value="steel">Steel</option>
+                <option value="aluminum">Aluminum</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="damage" class="form-label">Any other damage? (e.g., Mudflap, Bracket, Rim)</label>
+              <select id="damage" class="form-select">
+                <option value="" disabled selected>Please choose...</option>
+                <option value="no">No</option>
+                <option value="yes">Yes</option>
+              </select>
+              <input type="text" id="damageDetails" class="form-control mt-2 d-none" placeholder="Describe the damage">
+            </div>
+          </div>
+          <div class="d-flex justify-content-between">
+            <button type="button" class="btn btn-secondary prev-step">Previous</button>
+            <button type="button" class="btn btn-primary next-step">Next</button>
           </div>
         </div>
       
-        <!-- 11. Vendor & Dispatch Information -->
-        <div class="mb-3">
-          <label for="vendor" class="form-label">Vendor Name</label>
-          <input type="text" id="vendor" class="form-control" placeholder="Enter vendor name">
-        </div>
-        <div class="mb-3 row">
-          <div class="col-md-6">
-            <label for="dispatch" class="form-label">Dispatch Time / ETA</label>
-            <input type="text" id="dispatch" class="form-control" placeholder="Enter dispatch details">
+        <!-- Step 8: Breakdown Description -->
+        <div class="form-step" id="step-8" style="display: none;">
+          <div class="mb-3">
+            <label for="breakdownDesc" class="form-label">Description of Breakdown</label>
+            <textarea id="breakdownDesc" class="form-control" rows="3" placeholder="Enter description"></textarea>
           </div>
-          <div class="col-md-6">
-            <label for="rcNumber" class="form-label">RC #</label>
-            <input type="text" id="rcNumber" class="form-control" placeholder="Enter RC number">
+          <div class="d-flex justify-content-between">
+            <button type="button" class="btn btn-secondary prev-step">Previous</button>
+            <button type="button" class="btn btn-primary next-step">Next</button>
           </div>
         </div>
       
-        <!-- Submit Button -->
-        <button type="submit" class="btn btn-primary d-block mx-auto">Generate Report</button>
+        <!-- Step 9: Pictures -->
+        <div class="form-step" id="step-9" style="display: none;">
+          <div class="mb-3 row">
+            <div class="col-md-6">
+              <label for="picturesRequested" class="form-label">Pictures Requested</label>
+              <select id="picturesRequested" class="form-select">
+                <option value="" disabled selected>Please choose...</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="picturesReceived" class="form-label">Pictures Received</label>
+              <select id="picturesReceived" class="form-select">
+                <option value="" disabled selected>Please choose...</option>
+                <option value="waiting">Waiting</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between">
+            <button type="button" class="btn btn-secondary prev-step">Previous</button>
+            <button type="button" class="btn btn-primary next-step">Next</button>
+          </div>
+        </div>
+      
+        <!-- Step 10: Vendor & Dispatch Information -->
+        <div class="form-step" id="step-10" style="display: none;">
+          <div class="mb-3">
+            <label for="vendor" class="form-label">Vendor Name</label>
+            <input type="text" id="vendor" class="form-control" placeholder="Enter vendor name">
+          </div>
+          <div class="mb-3 row">
+            <div class="col-md-6">
+              <label for="dispatch" class="form-label">Dispatch Time / ETA</label>
+              <input type="text" id="dispatch" class="form-control" placeholder="Enter dispatch details">
+            </div>
+            <div class="col-md-6">
+              <label for="rcNumber" class="form-label">RC #</label>
+              <input type="text" id="rcNumber" class="form-control" placeholder="Enter RC number">
+            </div>
+          </div>
+          <div class="d-flex justify-content-between">
+            <button type="button" class="btn btn-secondary prev-step">Previous</button>
+            <button type="submit" class="btn btn-primary">Generate Report</button>
+          </div>
+        </div>
       </form>
+      
       
     </div>
 

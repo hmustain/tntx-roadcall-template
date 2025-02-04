@@ -1,5 +1,38 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // 1. Show/hide FedEx details based on company selection
+    // Multi-step navigation
+    var currentStep = 1;
+    var steps = document.querySelectorAll('.form-step');
+    var totalSteps = steps.length;
+  
+    function showStep(step) {
+      steps.forEach(function (el) {
+        el.style.display = 'none';
+      });
+      document.getElementById('step-' + step).style.display = 'block';
+    }
+  
+    document.querySelectorAll('.next-step').forEach(function (button) {
+      button.addEventListener('click', function () {
+        if (currentStep < totalSteps) {
+          currentStep++;
+          showStep(currentStep);
+        }
+      });
+    });
+  
+    document.querySelectorAll('.prev-step').forEach(function (button) {
+      button.addEventListener('click', function () {
+        if (currentStep > 1) {
+          currentStep--;
+          showStep(currentStep);
+        }
+      });
+    });
+  
+    // Initially display the first step
+    showStep(currentStep);
+  
+    // Dynamic section: FedEx details (Step 1)
     var companySelect = document.getElementById('company');
     var fedexDetails = document.getElementById('fedexDetails');
     companySelect.addEventListener('change', function () {
@@ -10,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   
-    // 2. Show/hide load number field if trailer is loaded
+    // Dynamic section: Load number if trailer is loaded (Step 5)
     var loadStatusSelect = document.getElementById('loadStatus');
     var loadNumberSection = document.getElementById('loadNumberSection');
     loadStatusSelect.addEventListener('change', function () {
@@ -21,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   
-    // 3. Show/hide tire-related questions
+    // Dynamic section: Tire-related questions (Step 7)
     var tireBreakdownSelect = document.getElementById('tireBreakdown');
     var tireQuestions = document.getElementById('tireQuestions');
     tireBreakdownSelect.addEventListener('change', function () {
@@ -32,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   
-    // 4. Optionally, show damage details if damage is "yes"
+    // Dynamic section: Damage details (inside tire questions)
     var damageSelect = document.getElementById('damage');
     var damageDetails = document.getElementById('damageDetails');
     damageSelect.addEventListener('change', function () {
