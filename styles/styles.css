@@ -42,4 +42,15 @@
   body {
     padding-top: 75px; /* Adjust based on navbar height */
   }
+
+  .btn-primary {
+    background-color: #000; /* Change to your preferred color */
+    border-color: #000; /* Ensures the border matches */
+  }
+  
+  .btn-primary:hover {
+    background-color: #333333; /* Darker shade for hover effect */
+    border-color: #333333;
+  }
+  
   
