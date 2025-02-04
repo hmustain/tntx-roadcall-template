@@ -133,12 +133,21 @@
         <!-- Company -->
         <div class="mb-3">
           <label for="company" class="form-label">Company</label>
-          <input
-            type="text"
-            id="company"
-            class="form-control"
-            placeholder="Enter company name"
-          />
+          <select id="company" class="form-select">
+            <option value="" selected disabled>Please select a company...</option>
+            <option value="bigm">Big M</option>
+            <option value="cctlandshark">CCT/Landshark</option>
+            <option value="fedex">FedEx</option>
+            <option value="hodges">Hodges</option>
+            <option value="lewisexpress">Lewis Express</option>
+            <option value="melton">Melton</option>
+            <option value="royal">Royal</option>
+            <option value="smt">SMT</option>
+            <option value="sky">Sky</option>
+            <option value="watkins">Watkins</option>
+            <option value="wilson">Wilson</option>
+            <option value="other">Other</option>
+          </select>
         </div>
 
         <!-- Called In By / Phone Number -->
@@ -170,7 +179,7 @@
             type="text"
             id="feId"
             class="form-control"
-            placeholder="Enter FE details"
+            placeholder="Enter FedEx Employee Details"
           />
         </div>
 
@@ -230,16 +239,17 @@
             />
           </div>
           <div class="col-md-6">
-            <label for="loadStatus" class="form-label"
-              >Loaded / Empty / Weight</label
-            >
-            <input
-              type="text"
-              id="loadStatus"
-              class="form-control"
-              placeholder="Enter load details"
-            />
+            <label for="loadStatus" class="form-label">Loaded or Empty?</label>
+            <select id="loadStatus" class="form-select">
+              <option value="" disabled selected>Please choose...</option>
+              <option value="empty">Empty</option>
+              <option value="loaded">Loaded</option>
+            </select>
           </div>
+          <div class="mb-3">
+            <label for="loadNumber" class="form-label">What Is The Load Number?</label>
+            <input type="text" id="loadNumber" class="form-control" placeholder="Enter load number" />
+          </div>          
         </div>
 
         <!-- Unit Affected -->
