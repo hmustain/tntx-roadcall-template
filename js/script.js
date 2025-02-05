@@ -93,32 +93,49 @@ function showSection(sectionElement) {
   
     // NEW: Generate Report on form submission
     document.getElementById('roadCallForm').addEventListener('submit', function(e) {
-      e.preventDefault(); // Prevent actual form submission
-  
-      // Create a FormData object to gather all values
-      var formData = new FormData(this);
+        e.preventDefault(); // Prevent the default form submission behavior
       
-      // Build the table HTML
-      var tableHtml = '<table class="table table-bordered">';
-      tableHtml += '<thead><tr><th>Field</th><th>Answer</th></tr></thead>';
-      tableHtml += '<tbody>';
-      
-      // Loop over the FormData entries and add rows for fields with values
-      formData.forEach(function(value, key) {
-        if (value.trim() !== "") {
-          tableHtml += '<tr><td>' + key + '</td><td>' + value + '</td></tr>';
-        }
+        // Gather form data
+        var formData = new FormData(this);
+        
+        // Build the table HTML using Bootstrap table markup
+        var tableHtml = `
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Field</th>
+                <th scope="col">Answer</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+        
+        // Loop through each form field and add a row if it has a value
+        formData.forEach(function(value, key) {
+          if (value.trim() !== "") {
+            tableHtml += `<tr>
+                            <td>${key}</td>
+                            <td>${value}</td>
+                          </tr>`;
+          }
+        });
+        
+        tableHtml += `
+            </tbody>
+          </table>
+        `;
+        
+        // Hide the form
+        document.getElementById('roadCallForm').style.display = 'none';
+        
+        // Insert the table into the report container and display it
+        var reportContainer = document.getElementById('report');
+        reportContainer.innerHTML = tableHtml;
+        reportContainer.style.display = 'block';
+        
+        // Optionally, scroll the report container into view
+        reportContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
       });
       
-      tableHtml += '</tbody></table>';
-      
-      // Insert the table into the report container and make it visible
-      var reportContainer = document.getElementById('report');
-      reportContainer.innerHTML = tableHtml;
-      reportContainer.style.display = 'block';
-      
-      // Optionally, scroll the report container into view
-      reportContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    });
   });
   
