@@ -130,7 +130,7 @@ function showSection(sectionElement) {
       // Append buttons for "New Form" and "Copy Table"
       tableHtml += `
         <div class="d-flex justify-content-end mt-3">
-          <button id="newForm" type="button" class="btn btn-secondary me-2">New Form</button>
+          <button id="newForm" type="button" class="btn btn-primary me-2">New Form</button>
           <button id="copyTable" type="button" class="btn btn-primary">Copy Table</button>
         </div>
       `;
