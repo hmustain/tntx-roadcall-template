@@ -13,10 +13,14 @@ function showSection(sectionElement) {
 
   function showStep(step) {
     steps.forEach(function (el) {
-      el.style.display = "none";
+      el.style.display = 'none';
     });
-    document.getElementById("step-" + step).style.display = "block";
+    var stepElement = document.getElementById('step-' + step);
+    stepElement.style.display = 'block';
+    // Scroll the step into view centered
+    stepElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
+  
 
   document.querySelectorAll(".next-step").forEach(function (button) {
     button.addEventListener("click", function () {
