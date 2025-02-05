@@ -356,8 +356,21 @@
         <div class="form-step" id="step-10" style="display: none;">
           <div class="mb-3">
             <label for="vendor" class="form-label">Vendor Name</label>
-            <input type="text" id="vendor" class="form-control" placeholder="Enter vendor name">
+            <div class="input-group">
+              <input
+                type="text"
+                id="vendor"
+                class="form-control"
+                placeholder="Enter vendor name or click the wrench to find a vendor..."
+              />
+              <button type="button" class="btn btn-outline-secondary" 
+                      onclick="window.open('https://www.nttsbreakdown.com/app/', '_blank')"
+                      title="Click To Find A Vendor">
+                      <i class="fa-regular fa-wrench"></i>
+              </button>
+            </div>
           </div>
+          
           <div class="mb-3 row">
             <div class="col-md-6">
               <label for="dispatch" class="form-label">Dispatch Time / ETA</label>
@@ -369,13 +382,11 @@
             </div>
           </div>
           <div class="d-flex justify-content-between">
-            <button type="button" class="btn btn-secondary prev-step">Previous</button>
+            <button type="button" class="btn btn-primary prev-step">Previous</button>
             <button type="submit" class="btn btn-primary">Generate Report</button>
           </div>
         </div>
       </form>
-      
-      
     </div>
 
     <!-- Bootstrap JS -->
