@@ -100,8 +100,8 @@ function showSection(sectionElement) {
       
       // Build the table HTML using Bootstrap markup
       var tableHtml = `
-        <table class="table">
-          <thead>
+        <table class="table table-bordered border-dark">
+          <thead class="table-dark">
             <tr>
               <th scope="col">Field</th>
               <th scope="col">Answer</th>
