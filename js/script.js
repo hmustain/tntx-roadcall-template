@@ -93,49 +93,101 @@ function showSection(sectionElement) {
   
     // NEW: Generate Report on form submission
     document.getElementById('roadCallForm').addEventListener('submit', function(e) {
-        e.preventDefault(); // Prevent the default form submission behavior
+      e.preventDefault(); // Prevent actual submission
+    
+      // Gather form data
+      var formData = new FormData(this);
       
-        // Gather form data
-        var formData = new FormData(this);
-        
-        // Build the table HTML using Bootstrap table markup
-        var tableHtml = `
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">Field</th>
-                <th scope="col">Answer</th>
-              </tr>
-            </thead>
-            <tbody>
-        `;
-        
-        // Loop through each form field and add a row if it has a value
-        formData.forEach(function(value, key) {
-          if (value.trim() !== "") {
-            tableHtml += `<tr>
-                            <td>${key}</td>
-                            <td>${value}</td>
-                          </tr>`;
-          }
-        });
-        
-        tableHtml += `
-            </tbody>
-          </table>
-        `;
-        
-        // Hide the form
-        document.getElementById('roadCallForm').style.display = 'none';
-        
-        // Insert the table into the report container and display it
-        var reportContainer = document.getElementById('report');
-        reportContainer.innerHTML = tableHtml;
-        reportContainer.style.display = 'block';
-        
-        // Optionally, scroll the report container into view
-        reportContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Build the table HTML using Bootstrap markup
+      var tableHtml = `
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Field</th>
+              <th scope="col">Answer</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      
+      // Loop through the FormData entries
+      formData.forEach(function(value, key) {
+        if (value.trim() !== "") {
+          tableHtml += `
+            <tr>
+              <td>${key}</td>
+              <td>${value}</td>
+            </tr>
+          `;
+        }
       });
+      
+      tableHtml += `
+          </tbody>
+        </table>
+      `;
+      
+      // Append buttons for "New Form" and "Copy Table"
+      tableHtml += `
+        <div class="d-flex justify-content-end mt-3">
+          <button id="newForm" type="button" class="btn btn-secondary me-2">New Form</button>
+          <button id="copyTable" type="button" class="btn btn-primary">Copy Table</button>
+        </div>
+      `;
+      
+      // Hide the form
+      document.getElementById('roadCallForm').style.display = 'none';
+      
+      // Insert the table (with buttons) into the report container and display it
+      var reportContainer = document.getElementById('report');
+      reportContainer.innerHTML = tableHtml;
+      reportContainer.style.display = 'block';
+      
+      // Optionally scroll the report container into view
+      reportContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      
+      // Attach event listener to the "Copy Table" button
+      document.getElementById('copyTable').addEventListener('click', function() {
+        var reportContainer = document.getElementById('report');
+        var tableElement = reportContainer.querySelector('table');
+        if (tableElement) {
+          // Build a plain-text version of the table
+          var plainText = '';
+          var rows = tableElement.querySelectorAll('tr');
+          rows.forEach(function(row) {
+            var cells = row.querySelectorAll('th, td');
+            var rowText = Array.from(cells)
+                               .map(function(cell) {
+                                 return cell.innerText.trim();
+                               })
+                               .join('\t');
+            plainText += rowText + '\n';
+          });
+          
+          navigator.clipboard.writeText(plainText)
+            .then(function() {
+              alert("Table copied to clipboard as plain text!");
+            })
+            .catch(function(err) {
+              alert("Error copying table: " + err);
+            });
+        }
+      });
+      
+      
+      // Attach event listener to the "New Form" button
+      document.getElementById('newForm').addEventListener('click', function() {
+        // Reset the form
+        document.getElementById('roadCallForm').reset();
+        // Show the form and hide the report container
+        document.getElementById('roadCallForm').style.display = 'block';
+        reportContainer.style.display = 'none';
+        // Reset the multi-step navigation: set currentStep to 1 and show step 1
+        currentStep = 1;
+        showStep(currentStep);
+      });
+    });
+    
       
   });
   
