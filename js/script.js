@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // Build the table HTML with inline styles for copy/paste
       var tableHtml = `
 <table style="width:100%; border-collapse: collapse;">
-  <thead style="background-color: #343a40; color: #fff;">
+  <thead style="background-color:rgb(157, 157, 157); color: #fff;">
     <tr>
       <th scope="col" style="border: 1px solid #000; padding: 8px;">Field</th>
       <th scope="col" style="border: 1px solid #000; padding: 8px;">Answer</th>
