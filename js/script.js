@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
   var otherCompanyContainer = document.getElementById("otherCompanyContainer");
 
   companySelect.addEventListener("change", function () {
-    if (this.value === "fedex") {
+    if (this.value === "FedEx") {
       showSection(fedexDetails);
     } else if (this.value === "Other") {
       showSection(otherCompanyContainer);
