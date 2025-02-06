@@ -162,7 +162,7 @@ document.addEventListener("DOMContentLoaded", function () {
           const clipboardItem = new ClipboardItem({ 'text/html': blob });
           navigator.clipboard.write([clipboardItem])
             .then(function() {
-              alert("Table copied with formatting as HTML!");
+              alert("Table copied to your clipboard");
             })
             .catch(function(err) {
               alert("Error copying table: " + err);
