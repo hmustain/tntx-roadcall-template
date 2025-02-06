@@ -171,16 +171,26 @@ document.addEventListener("DOMContentLoaded", function () {
       });
       
 
-      // Attach event listener to the "New Form" button
-      document.getElementById("newForm").addEventListener("click", function () {
-        // Reset the form
-        document.getElementById("roadCallForm").reset();
-        // Show the form and hide the report container
-        document.getElementById("roadCallForm").style.display = "block";
-        reportContainer.style.display = "none";
-        // Reset the multi-step navigation: set currentStep to 1 and show step 1
+      document.getElementById('newForm').addEventListener('click', function() {
+        var form = document.getElementById('roadCallForm');
+        
+        // Reset all form fields to their initial values.
+        form.reset();
+        
+        // Explicitly hide dynamic sections that might have been shown.
+        document.getElementById('fedexDetails').style.display = 'none';
+        document.getElementById('loadNumberSection').style.display = 'none';
+        document.getElementById('tireQuestions').style.display = 'none';
+        // If you have other dynamic sections (like damage details), hide them too.
+        document.getElementById('damageDetails').classList.add('d-none');
+        
+        // Show the form again and hide the report container.
+        form.style.display = 'block';
+        document.getElementById('report').style.display = 'none';
+        
+        // Reset the multi-step navigation: set currentStep to 1 and show step 1.
         currentStep = 1;
         showStep(currentStep);
-      });
+      });      
     });
 });
