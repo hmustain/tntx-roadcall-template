@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Build the table HTML with inline styles for formatting
     var tableHtml = `
-      <table style="width:100%; border-collapse: collapse;">
+      <table style="width:50%; border-collapse: collapse; margin: 0 auto;">
         <thead style="background-color: #343a40; color: #fff;">
           <tr>
             <th scope="col" style="border: 1px solid #000; padding: 8px;">Field</th>
