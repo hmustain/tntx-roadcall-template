@@ -101,6 +101,29 @@ document.addEventListener("DOMContentLoaded", function () {
       var formData = new FormData(this);
 
       // Build the table HTML with inline styles for copy/paste
+      // Get the current date and time
+// Get the current date and time
+var now = new Date();
+
+// Array of month abbreviations
+var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+var monthAbbrev = monthNames[now.getMonth()];  // getMonth() returns 0-11
+
+var day = String(now.getDate()).padStart(2, '0');
+// Convert 24-hour time to 12-hour format
+var hours24 = now.getHours();
+var ampm = hours24 >= 12 ? 'PM' : 'AM';
+var hours12 = hours24 % 12;
+if (hours12 === 0) { 
+  hours12 = 12; 
+}
+
+var minutes = String(now.getMinutes()).padStart(2, '0');
+
+// Format date as "Mon DD" and time as "HH:MM"
+var dateString = monthAbbrev + " " + day;
+var timeString = hours12 + ":" + minutes + " " + ampm;
+
       var tableHtml = `
 <table style="width:100%; border-collapse: collapse;">
   <thead style="background-color:rgb(157, 157, 157); color: #fff;">
@@ -110,6 +133,10 @@ document.addEventListener("DOMContentLoaded", function () {
     </tr>
   </thead>
   <tbody>
+  <tr>
+        <td style="border: 1px solid #000; padding: 8px;">Date / Time</td>
+        <td style="border: 1px solid #000; padding: 8px;">${dateString} - ${timeString}</td>
+      </tr>
 `;
 
       formData.forEach(function (value, key) {
