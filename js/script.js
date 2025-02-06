@@ -180,22 +180,28 @@ document.addEventListener("DOMContentLoaded", function () {
     // Optionally scroll the report container into view
     reportContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-    // Attach event listener to the "Copy Table" button
     document.getElementById('copyTable').addEventListener('click', function() {
+      var reportContainer = document.getElementById('report');
       var tableElement = reportContainer.querySelector('table');
       if (tableElement) {
-        // Copy the table's outerHTML as HTML using the Clipboard API
-        const blob = new Blob([tableElement.outerHTML], { type: 'text/html' });
+        // Clone the table so we don't modify the original displayed table
+        var clonedTable = tableElement.cloneNode(true);
+        // Update the inline style for the cloned table to have a width of 50% and center it
+        clonedTable.style.width = '75%';
+        clonedTable.style.margin = '0';
+        
+        // Copy the cloned table's outerHTML as HTML using the Clipboard API
+        const blob = new Blob([clonedTable.outerHTML], { type: 'text/html' });
         const clipboardItem = new ClipboardItem({ 'text/html': blob });
         navigator.clipboard.write([clipboardItem])
           .then(() => {
-            alert("Table HTML copied to clipboard!");
+            alert("Table copied to clipboard!");
           })
           .catch(err => {
             alert("Error copying table: " + err);
           });
       }
-    });
+    });    
 
     // Attach event listener to the "New Form" button (only here)
     document.getElementById('newForm').addEventListener('click', function() {
