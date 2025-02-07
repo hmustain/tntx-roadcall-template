@@ -181,7 +181,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // Here, we merge the header cell (colspan="2") to display the subject line.
       var tableHtml = `
       <table style="width:100%; border-collapse: collapse;">
-        <thead style="background-color: #343a40; color: #fff;">
+        <thead style="background-color: #d3d3de; color: #000;">
           <tr>
             <th colspan="2" style="border: 1px solid #000; padding: 8px; text-align: center;">
               ${subjectLine}
@@ -190,8 +190,8 @@ document.addEventListener("DOMContentLoaded", function () {
         </thead>
         <tbody>
           <tr>
-            <td style="border: 1px solid #000; padding: 8px; width: 30%; white-space: nowrap;">Date / Time</td>
-            <td style="border: 1px solid #000; padding: 8px; width: 70%; white-space: normal; word-break: break-word;">${dateString} - ${timeString}</td>
+            <td style="border: 1px solid #000; padding: 8px; width: 35%; white-space: nowrap;">Date / Time</td>
+            <td style="border: 1px solid #000; padding: 8px; width: 65%; white-space: normal; word-break: break-word;">${dateString} - ${timeString}</td>
           </tr>
     `;
     
@@ -201,8 +201,8 @@ document.addEventListener("DOMContentLoaded", function () {
       if (value.trim() !== "") {
         tableHtml += `
           <tr>
-            <td style="border: 1px solid #000; padding: 8px; width: 30%; white-space: nowrap;">${key}</td>
-            <td style="border: 1px solid #000; padding: 8px; width: 70%; white-space: normal; word-break: break-word;">${value}</td>
+            <td style="border: 1px solid #000; padding: 8px; width: 35%; white-space: nowrap;">${key}</td>
+            <td style="border: 1px solid #000; padding: 8px; width: 65%; white-space: normal; word-break: break-word;">${value}</td>
           </tr>
         `;
       }
