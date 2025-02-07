@@ -95,23 +95,58 @@ document.addEventListener("DOMContentLoaded", function () {
   // NEW: Generate Report on form submission
   document.getElementById('roadCallForm').addEventListener('submit', function(e) {
     e.preventDefault(); // Prevent actual submission
-
+  
     // Gather form data
     var formData = new FormData(this);
-
+  
     // Convert FormData to an object for easier manipulation
     var data = {};
     formData.forEach(function(value, key) {
       data[key] = value;
     });
-
-    // If the user selected "Other" for Company, replace it with the value entered in "Other Company"
+  
+    // Handle the "Other" company case (if applicable)
     if (data["Company"] === "Other") {
       data["Company"] = data["Other Company"] || "Other";
-      // Optionally remove the "Other Company" field so it doesn't show up as its own row
       delete data["Other Company"];
     }
-
+  
+    // Determine unit type and unit number based on Unit Affected
+    var unitType = "";
+    var unitNumber = "";
+    if (data["Unit Affected"]) {
+      if (data["Unit Affected"].toLowerCase() === "tractor") {
+        unitType = "TRK";
+        unitNumber = data["Truck Number"] || "";
+      } else if (data["Unit Affected"].toLowerCase() === "trailer") {
+        unitType = "TRL";
+        unitNumber = data["Trailer Number"] || "";
+      }
+    }
+  
+    // Build the subject line using keys:
+    // "RC# Company UnitType UnitNumber Complaint City, State"
+    var subjectLine = "";
+    if (data["RC?"]) {
+      subjectLine += data["RC?"] + " - ";
+    }
+    if (data["Company"]) {
+      subjectLine += data["Company"];
+      if (unitType) {
+        subjectLine += " " + unitType;
+      }
+      if (unitNumber) {
+        subjectLine += " " + unitNumber;
+      }
+      subjectLine += " - ";
+    }
+    if (data["Complaint"]) {
+      subjectLine += data["Complaint"] + " - ";
+    }
+    if (data["City"] && data["State"]) {
+      subjectLine += data["City"] + ", " + data["State"];
+    }
+  
     // Get the current date and time (formatted as before)
     var now = new Date();
     var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -126,14 +161,16 @@ document.addEventListener("DOMContentLoaded", function () {
     var minutes = String(now.getMinutes()).padStart(2, '0');
     var dateString = monthAbbrev + " " + day;
     var timeString = hours12 + ":" + minutes + " " + ampm;
-
-    // Build the table HTML with inline styles for formatting
+  
+    // Build the table HTML with inline styles for formatting.
+    // Here, we merge the header cell (colspan="2") to display the subject line.
     var tableHtml = `
       <table style="width:100%; border-collapse: collapse;">
         <thead style="background-color: #343a40; color: #fff;">
           <tr>
-            <th scope="col" style="border: 1px solid #000; padding: 8px;">Field</th>
-            <th scope="col" style="border: 1px solid #000; padding: 8px;">Answer</th>
+            <th colspan="2" style="border: 1px solid #000; padding: 8px; text-align: center;">
+              ${subjectLine}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -142,8 +179,8 @@ document.addEventListener("DOMContentLoaded", function () {
             <td style="border: 1px solid #000; padding: 8px;">${dateString} - ${timeString}</td>
           </tr>
     `;
-
-    // Loop through the data object and add rows for each field
+  
+    // Loop through the data object and add rows for each field (if desired)
     Object.keys(data).forEach(function(key) {
       var value = data[key];
       if (value.trim() !== "") {
@@ -155,12 +192,12 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
       }
     });
-
+  
     tableHtml += `
         </tbody>
       </table>
     `;
-
+  
     // Append the buttons for "New Form" and "Copy Table"
     tableHtml += `
       <div class="d-flex justify-content-end mt-3">
@@ -168,30 +205,19 @@ document.addEventListener("DOMContentLoaded", function () {
         <button id="copyTable" type="button" class="btn btn-primary">Copy Table</button>
       </div>
     `;
-
-    // Hide the form
+  
+    // Hide the form and display the report
     document.getElementById('roadCallForm').style.display = 'none';
-
-    // Insert the table (with buttons) into the report container and display it
     var reportContainer = document.getElementById('report');
     reportContainer.innerHTML = tableHtml;
     reportContainer.style.display = 'block';
-
-    // Optionally scroll the report container into view
     reportContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
+  
+    // Attach event listener to the "Copy Table" button
     document.getElementById('copyTable').addEventListener('click', function() {
-      var reportContainer = document.getElementById('report');
       var tableElement = reportContainer.querySelector('table');
       if (tableElement) {
-        // Clone the table so we don't modify the original displayed table
-        var clonedTable = tableElement.cloneNode(true);
-        // Update the inline style for the cloned table to have a width of 50% and center it
-        clonedTable.style.width = '75%';
-        clonedTable.style.margin = '0';
-        
-        // Copy the cloned table's outerHTML as HTML using the Clipboard API
-        const blob = new Blob([clonedTable.outerHTML], { type: 'text/html' });
+        const blob = new Blob([tableElement.outerHTML], { type: 'text/html' });
         const clipboardItem = new ClipboardItem({ 'text/html': blob });
         navigator.clipboard.write([clipboardItem])
           .then(() => {
@@ -201,34 +227,23 @@ document.addEventListener("DOMContentLoaded", function () {
             alert("Error copying table: " + err);
           });
       }
-    });    
-
-    // Attach event listener to the "New Form" button (only here)
+    });
+  
+    // Attach event listener to the "New Form" button (inside the submission handler)
     document.getElementById('newForm').addEventListener('click', function() {
       var form = document.getElementById('roadCallForm');
-
-      // Reset all form fields.
       form.reset();
-
-      // Hide dynamic sections.
       document.getElementById('fedexDetails').style.display = 'none';
       document.getElementById('loadNumberSection').style.display = 'none';
       document.getElementById('tireQuestions').style.display = 'none';
       document.getElementById('damageDetails').classList.add('d-none');
-
-      // Hide the "Other Company" container.
-      var otherCompanyContainer = document.getElementById('otherCompanyContainer');
       if (otherCompanyContainer) {
         otherCompanyContainer.style.display = 'none';
       }
-
-      // Show the form and hide the report container.
       form.style.display = 'block';
       reportContainer.style.display = 'none';
-
-      // Reset the multi-step navigation: set currentStep to 1 and show step 1.
       currentStep = 1;
       showStep(currentStep);
     });
-  });
+  });  
 });
