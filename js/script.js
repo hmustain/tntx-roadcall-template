@@ -51,10 +51,19 @@ document.addEventListener("DOMContentLoaded", function () {
   companySelect.addEventListener("change", function () {
     if (this.value === "FedEx") {
       showSection(fedexDetails);
+      // Ensure the Other Company container is hidden
+      otherCompanyContainer.style.display = "none";
     } else if (this.value === "Other") {
       showSection(otherCompanyContainer);
+      // Ensure the FedEx details are hidden
+      fedexDetails.style.display = "none";
+    } else {
+      // For any other company, hide both extra sections
+      fedexDetails.style.display = "none";
+      otherCompanyContainer.style.display = "none";
     }
   });
+  
 
   // Dynamic section: Load number if trailer is loaded (Step 5)
   var loadStatusSelect = document.getElementById("loadStatus");
