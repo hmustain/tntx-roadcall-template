@@ -48,9 +48,9 @@
     color: #f8f9fa; /* Slightly lighter hover color */
   }
 
-  body {
+  /* body {
     /* padding-top: 75px; Adjust based on navbar height */
-  }
+  /* } */
 
   .btn-primary {
     background-color: #000; /* Change to your preferred color */
