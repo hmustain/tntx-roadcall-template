@@ -197,11 +197,18 @@
 
       <!-- Step 3: Driver's Name -->
       <div class="form-step" id="step-3" style="display: none">
-        <div class="mb-3">
+        <div class="mb-3 row">
+          <div class="col-md-6">
           <label for="driverName" class="form-label">Driver's Name</label>
           <input type="text" id="driverName" name="Driver's Name" class="form-control"
             placeholder="Enter driver's name" />
         </div>
+        <div class="col-md-6">
+          <label for="callerPhone" class="form-label">Phone Number</label>
+          <input type="tel" id="callerPhone" name="Phone Number" class="form-control"
+            placeholder="Enter phone number" />
+        </div>
+      </div>
         <div class="d-flex justify-content-between">
           <button type="button" class="btn btn-primary prev-step">
             Previous
@@ -269,6 +276,10 @@
         <div class="mb-3" id="loadNumberSection" style="display: none">
           <label for="loadNumber" class="form-label">What is their Load Number?</label>
           <input type="text" id="loadNumber" name="Load Number" class="form-control" placeholder="Enter load number" />
+        </div>
+        <div class="mb-3" id="weightSection" style="display: none">
+          <label for="weight" class="form-label">What is the weight?</label>
+          <input type="text" id="weight" name="Weight" class="form-control" placeholder="Enter the weight" />
         </div>
         <div class="mb-3">
           <label for="unitAffected" class="form-label">Unit Affected</label>
