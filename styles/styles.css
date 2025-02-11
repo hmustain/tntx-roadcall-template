@@ -67,4 +67,68 @@
     margin-bottom: 100px;
   }
 
+ /* Footer Base */
+.footer {
+  background-color: #000;
+  color: #fff;
+  padding: 20px 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Footer Headings & State Names */
+.footer-heading,
+.state-name {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Location Block */
+.location-block {
+  margin-bottom: 15px;
+}
+
+/* City List Styling */
+.city-list {
+  list-style: none;
+  padding-left: 15px;  /* Indentation for cities */
+  margin: 0;
+  font-size: 1.0rem;
+}
+
+.city-list li {
+  margin-bottom: 5px;
+}
+
+.city-list li a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.city-list li a:hover {
+  text-decoration: underline;
+}
+
+/* Footer Logos */
+.footer-logo {
+  max-width: 200px;
+  margin-bottom: 10px;
+}
+
+/* Footer Note */
+.footer-note {
+  font-size: 0.8rem;
+  margin-top: 10px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 767px) {
+  .footer .col-md-3 {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+}
+
+
+
   
