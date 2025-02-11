@@ -64,18 +64,21 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
   
+// Dynamic section: Load number and weight if trailer is loaded (Step 5)
+var loadStatusSelect = document.getElementById("loadStatus");
+var loadNumberSection = document.getElementById("loadNumberSection");
+var weightSection = document.getElementById("weightSection");
 
-  // Dynamic section: Load number if trailer is loaded (Step 5)
-  var loadStatusSelect = document.getElementById("loadStatus");
-  var loadNumberSection = document.getElementById("loadNumberSection");
+loadStatusSelect.addEventListener("change", function () {
+  if (this.value === "loaded") {
+    showSection(loadNumberSection);
+    showSection(weightSection);
+  } else {
+    loadNumberSection.style.display = "none";
+    weightSection.style.display = "none";
+  }
+});
 
-  loadStatusSelect.addEventListener("change", function () {
-    if (this.value === "loaded") {
-      showSection(loadNumberSection);
-    } else {
-      loadNumberSection.style.display = "none";
-    }
-  });
 
   // Dynamic section: Tire-related questions (Step 8)
 var tireBreakdownSelect = document.getElementById("tireBreakdown");
