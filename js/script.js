@@ -1,7 +1,7 @@
 // Helper function: Show a dynamic section and (optionally) scroll it into view
 function showSection(sectionElement) {
   sectionElement.style.display = "block";
-  sectionElement.scrollIntoView({ behavior: "smooth", block: "start" });
+  // sectionElement.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -77,17 +77,21 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Dynamic section: Tire-related questions (Step 7)
-  var tireBreakdownSelect = document.getElementById("tireBreakdown");
-  var tireQuestions = document.getElementById("tireQuestions");
+  // Dynamic section: Tire-related questions (Step 8)
+var tireBreakdownSelect = document.getElementById("tireBreakdown");
+var tireQuestions = document.getElementById("tireQuestions");
 
-  tireBreakdownSelect.addEventListener("change", function () {
-    if (this.value === "yes") {
-      showSection(tireQuestions);
-    } else {
-      tireQuestions.style.display = "none";
-    }
-  });
+tireBreakdownSelect.addEventListener("change", function () {
+  if (this.value === "yes") {
+    showSection(tireQuestions);
+    // After showing the tire-related questions, scroll Step 8 so its bottom is visible.
+    setTimeout(function () {
+      document.getElementById('step-8').scrollIntoView({ behavior: "smooth", block: "end" });
+    }, 100);
+  } else {
+    tireQuestions.style.display = "none";
+  }
+});
 
   // Dynamic section: Damage details (inside tire questions)
   var damageSelect = document.getElementById("damage");
