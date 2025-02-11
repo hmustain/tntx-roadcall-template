@@ -1,7 +1,7 @@
 // Helper function: Show a dynamic section and (optionally) scroll it into view
 function showSection(sectionElement) {
   sectionElement.style.display = "block";
-  sectionElement.scrollIntoView({ behavior: "smooth", block: "start" });
+  // sectionElement.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 document.addEventListener("DOMContentLoaded", function () {
