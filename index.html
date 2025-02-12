@@ -462,7 +462,7 @@
           </div>
           <div class="col-md-6">
             <label for="rcNumber" class="form-label">RC #</label>
-            <input type="text" id="rcNumber" name="RC?" class="form-control" placeholder="Enter RC number" />
+            <input type="number" id="rcNumber" name="RC #?" class="form-control" placeholder="Enter RC number (numbers only don't include RC)"oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
           </div>
         </div>
         <div class="d-flex justify-content-between">
