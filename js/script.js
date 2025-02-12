@@ -246,25 +246,30 @@ tireBreakdownSelect.addEventListener("change", function () {
       reportContainer.scrollIntoView({ behavior: "smooth", block: "center" });
 
       // Attach event listener to the "Copy Table" button
-      document
-        .getElementById("copyTable")
-        .addEventListener("click", function () {
-          var tableElement = reportContainer.querySelector("table");
-          if (tableElement) {
-            const blob = new Blob([tableElement.outerHTML], {
-              type: "text/html",
+      document.getElementById("copyTable").addEventListener("click", function () {
+        var tableElement = reportContainer.querySelector("table");
+        if (tableElement) {
+          // Clone the table to modify its style without affecting the original
+          var clonedTable = tableElement.cloneNode(true);
+          // Set the width to 75% (instead of 100%) for the copied version
+          clonedTable.style.width = "75%";
+          // Optionally, if you want it left-justified, ensure margin is 0 (or adjust as needed)
+          clonedTable.style.margin = "0";
+          
+          // Create a Blob with the cloned table's outerHTML
+          const blob = new Blob([clonedTable.outerHTML], { type: "text/html" });
+          const clipboardItem = new ClipboardItem({ "text/html": blob });
+          
+          navigator.clipboard.write([clipboardItem])
+            .then(() => {
+              alert("Table copied to clipboard!");
+            })
+            .catch((err) => {
+              alert("Error copying table: " + err);
             });
-            const clipboardItem = new ClipboardItem({ "text/html": blob });
-            navigator.clipboard
-              .write([clipboardItem])
-              .then(() => {
-                alert("Table copied to clipboard!");
-              })
-              .catch((err) => {
-                alert("Error copying table: " + err);
-              });
-          }
-        });
+        }
+      });
+      
 
       // Attach event listener to the "New Form" button (inside the submission handler)
       document.getElementById("newForm").addEventListener("click", function () {
