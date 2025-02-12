@@ -145,8 +145,8 @@ tireBreakdownSelect.addEventListener("change", function () {
       // Build the subject line using keys:
       // "RC# Company UnitType UnitNumber Complaint City, State"
       var subjectLine = "";
-      if (data["RC?"]) {
-        subjectLine += data["RC?"] + " - ";
+      if (data["RC #?"]) {
+        subjectLine += "RC" + data["RC #?"] + " - ";
       }
       if (data["Company"]) {
         subjectLine += data["Company"];
