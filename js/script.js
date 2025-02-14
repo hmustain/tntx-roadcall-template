@@ -79,6 +79,47 @@ loadStatusSelect.addEventListener("change", function () {
   }
 });
 
+// Event Listener for rewrite with AI Button to call on open AI API
+document.getElementById("rewriteBtn").addEventListener("click", async function () {
+  const descriptionField = document.getElementById("breakdownDesc");
+  const originalText = descriptionField.value.trim();
+
+  if (!originalText) {
+    alert("Please enter a description first.");
+    return;
+  }
+
+  // Disable the button and show loading state
+  this.disabled = true;
+  const originalButtonText = this.innerText;
+  this.innerText = "Rewriting...";
+
+  try {
+    const response = await fetch("/rewrite", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ text: originalText })
+    });
+    if (response.ok) {
+      const data = await response.json();
+      descriptionField.value = data.rewrittenText;
+    } else {
+      const errorText = await response.text();
+      console.error("Error Response:", errorText);
+      alert("Error rewriting text: " + response.statusText);
+    }
+  } catch (error) {
+    console.error("Error calling /rewrite endpoint:", error);
+    alert("An error occurred while rewriting the text.");
+  } finally {
+    this.disabled = false;
+    this.innerText = originalButtonText;
+  }
+});
+
+
 
   // Dynamic section: Tire-related questions (Step 8)
 var tireBreakdownSelect = document.getElementById("tireBreakdown");
