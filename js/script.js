@@ -63,79 +63,81 @@ document.addEventListener("DOMContentLoaded", function () {
       otherCompanyContainer.style.display = "none";
     }
   });
-  
-// Dynamic section: Load number and weight if trailer is loaded (Step 5)
-var loadStatusSelect = document.getElementById("loadStatus");
-var loadNumberSection = document.getElementById("loadNumberSection");
-var weightSection = document.getElementById("weightSection");
 
-loadStatusSelect.addEventListener("change", function () {
-  if (this.value === "loaded") {
-    showSection(loadNumberSection);
-    showSection(weightSection);
-  } else {
-    loadNumberSection.style.display = "none";
-    weightSection.style.display = "none";
-  }
-});
+  // Dynamic section: Load number and weight if trailer is loaded (Step 5)
+  var loadStatusSelect = document.getElementById("loadStatus");
+  var loadNumberSection = document.getElementById("loadNumberSection");
+  var weightSection = document.getElementById("weightSection");
 
-// Event Listener for rewrite with AI Button to call on open AI API
-document.getElementById("rewriteBtn").addEventListener("click", async function () {
-  const descriptionField = document.getElementById("breakdownDesc");
-  const originalText = descriptionField.value.trim();
-
-  if (!originalText) {
-    alert("Please enter a description first.");
-    return;
-  }
-
-  // Disable the button and show loading state
-  this.disabled = true;
-  const originalButtonText = this.innerText;
-  this.innerText = "Rewriting...";
-
-  try {
-    const response = await fetch("/rewrite", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ text: originalText })
-    });
-    if (response.ok) {
-      const data = await response.json();
-      descriptionField.value = data.rewrittenText;
+  loadStatusSelect.addEventListener("change", function () {
+    if (this.value === "loaded") {
+      showSection(loadNumberSection);
+      showSection(weightSection);
     } else {
-      const errorText = await response.text();
-      console.error("Error Response:", errorText);
-      alert("Error rewriting text: " + response.statusText);
+      loadNumberSection.style.display = "none";
+      weightSection.style.display = "none";
     }
-  } catch (error) {
-    console.error("Error calling /rewrite endpoint:", error);
-    alert("An error occurred while rewriting the text.");
-  } finally {
-    this.disabled = false;
-    this.innerText = originalButtonText;
-  }
-});
+  });
 
+  // Event Listener for rewrite with AI Button to call on OpenAI API
+  document
+    .getElementById("rewriteBtn")
+    .addEventListener("click", async function () {
+      const descriptionField = document.getElementById("breakdownDesc");
+      const originalText = descriptionField.value.trim();
 
+      if (!originalText) {
+        alert("Please enter a description first.");
+        return;
+      }
+
+      // Disable the button and show loading state
+      this.disabled = true;
+      const originalButtonHTML = this.innerHTML; // fixed variable name
+      this.innerHTML = "Rewriting...";
+
+      try {
+        const response = await fetch("/rewrite", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ text: originalText }),
+        });
+        if (response.ok) {
+          const data = await response.json();
+          descriptionField.value = data.rewrittenText;
+        } else {
+          const errorText = await response.text();
+          console.error("Error Response:", errorText);
+          alert("Error rewriting text: " + response.statusText);
+        }
+      } catch (error) {
+        console.error("Error calling /rewrite endpoint:", error);
+        alert("An error occurred while rewriting the text.");
+      } finally {
+        this.disabled = false;
+        this.innerHTML = originalButtonHTML;
+      }
+    });
 
   // Dynamic section: Tire-related questions (Step 8)
-var tireBreakdownSelect = document.getElementById("tireBreakdown");
-var tireQuestions = document.getElementById("tireQuestions");
+  var tireBreakdownSelect = document.getElementById("tireBreakdown");
+  var tireQuestions = document.getElementById("tireQuestions");
 
-tireBreakdownSelect.addEventListener("change", function () {
-  if (this.value === "yes") {
-    showSection(tireQuestions);
-    // After showing the tire-related questions, scroll Step 8 so its bottom is visible.
-    setTimeout(function () {
-      document.getElementById('step-8').scrollIntoView({ behavior: "smooth", block: "end" });
-    }, 100);
-  } else {
-    tireQuestions.style.display = "none";
-  }
-});
+  tireBreakdownSelect.addEventListener("change", function () {
+    if (this.value === "yes") {
+      showSection(tireQuestions);
+      // After showing the tire-related questions, scroll Step 8 so its bottom is visible.
+      setTimeout(function () {
+        document
+          .getElementById("step-8")
+          .scrollIntoView({ behavior: "smooth", block: "end" });
+      }, 100);
+    } else {
+      tireQuestions.style.display = "none";
+    }
+  });
 
   // Dynamic section: Damage details (inside tire questions)
   var damageSelect = document.getElementById("damage");
@@ -251,25 +253,24 @@ tireBreakdownSelect.addEventListener("change", function () {
             <td style="border: 1px solid #000; padding: 8px; width: 65%; white-space: normal; word-break: break-word;">${dateString} - ${timeString}</td>
           </tr>
     `;
-    
-    // Loop through the data object and add rows for each field with proper styling
-    Object.keys(data).forEach(function(key) {
-      var value = data[key];
-      if (value.trim() !== "") {
-        tableHtml += `
+
+      // Loop through the data object and add rows for each field with proper styling
+      Object.keys(data).forEach(function (key) {
+        var value = data[key];
+        if (value.trim() !== "") {
+          tableHtml += `
           <tr>
             <td style="border: 1px solid #000; padding: 8px; width: 35%; white-space: nowrap;">${key}</td>
             <td style="border: 1px solid #000; padding: 8px; width: 65%; white-space: normal; word-break: break-word;">${value}</td>
           </tr>
         `;
-      }
-    });
-    
-    tableHtml += `
+        }
+      });
+
+      tableHtml += `
         </tbody>
       </table>
     `;
-    
 
       // Append the buttons for "New Form" and "Copy Table"
       tableHtml += `
@@ -287,30 +288,34 @@ tireBreakdownSelect.addEventListener("change", function () {
       reportContainer.scrollIntoView({ behavior: "smooth", block: "center" });
 
       // Attach event listener to the "Copy Table" button
-      document.getElementById("copyTable").addEventListener("click", function () {
-        var tableElement = reportContainer.querySelector("table");
-        if (tableElement) {
-          // Clone the table to modify its style without affecting the original
-          var clonedTable = tableElement.cloneNode(true);
-          // Set the width to 75% (instead of 100%) for the copied version
-          clonedTable.style.width = "75%";
-          // Optionally, if you want it left-justified, ensure margin is 0 (or adjust as needed)
-          clonedTable.style.margin = "0";
-          
-          // Create a Blob with the cloned table's outerHTML
-          const blob = new Blob([clonedTable.outerHTML], { type: "text/html" });
-          const clipboardItem = new ClipboardItem({ "text/html": blob });
-          
-          navigator.clipboard.write([clipboardItem])
-            .then(() => {
-              alert("Table copied to clipboard!");
-            })
-            .catch((err) => {
-              alert("Error copying table: " + err);
+      document
+        .getElementById("copyTable")
+        .addEventListener("click", function () {
+          var tableElement = reportContainer.querySelector("table");
+          if (tableElement) {
+            // Clone the table to modify its style without affecting the original
+            var clonedTable = tableElement.cloneNode(true);
+            // Set the width to 75% (instead of 100%) for the copied version
+            clonedTable.style.width = "75%";
+            // Optionally, if you want it left-justified, ensure margin is 0 (or adjust as needed)
+            clonedTable.style.margin = "0";
+
+            // Create a Blob with the cloned table's outerHTML
+            const blob = new Blob([clonedTable.outerHTML], {
+              type: "text/html",
             });
-        }
-      });
-      
+            const clipboardItem = new ClipboardItem({ "text/html": blob });
+
+            navigator.clipboard
+              .write([clipboardItem])
+              .then(() => {
+                alert("Table copied to clipboard!");
+              })
+              .catch((err) => {
+                alert("Error copying table: " + err);
+              });
+          }
+        });
 
       // Attach event listener to the "New Form" button (inside the submission handler)
       document.getElementById("newForm").addEventListener("click", function () {
