@@ -61,6 +61,16 @@
     background-color: #333333; /* Darker shade for hover effect */
     border-color: #333333;
   }
+
+  .btn-secondary {
+    background-color: #0000ff;
+    border-color: #0000ff;
+  }
+
+  .btn-secondary:hover {
+    background-color: #89cff0;
+    border-color: #89cff0;
+  }
   
   /*form questions  */
   .form-step {
