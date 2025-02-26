@@ -189,8 +189,12 @@ document.addEventListener("DOMContentLoaded", function () {
       // "RC# Company UnitType UnitNumber Complaint City, State"
       var subjectLine = "";
       if (data["RC #?"]) {
-        subjectLine += "RC" + data["RC #?"] + " - ";
-      }
+        if (data["Company"] === "Big M" && data["Load Number"]) {
+          subjectLine += "RC" + data["RC #?"] + "/" + data["Load Number"] + " - ";
+        } else {
+          subjectLine += "RC" + data["RC #?"] + " - ";
+        }
+      }      
       if (data["Company"]) {
         subjectLine += data["Company"];
         if (unitType) {
