@@ -190,7 +190,7 @@ document.addEventListener("DOMContentLoaded", function () {
       var subjectLine = "";
       if (data["RC #?"]) {
         if (data["Company"] === "Big M" && data["Load Number"]) {
-          subjectLine += "RC" + data["RC #?"] + "/" + data["Load Number"] + " - ";
+          subjectLine += "RC" + data["RC #?"] + "/LD" + data["Load Number"] + " - ";
         } else {
           subjectLine += "RC" + data["RC #?"] + " - ";
         }
