@@ -262,11 +262,12 @@ companySelect.addEventListener("change", function () {
 
       // Loop through the data object and add rows for each field with proper styling
       Object.keys(data).forEach(function (key) {
+        var displayKey = key === "driverType" ? "Driver Type" : key;
         var value = data[key];
         if (value.trim() !== "") {
           tableHtml += `
           <tr>
-            <td style="border: 1px solid #000; padding: 8px; width: 35%; white-space: nowrap;">${key}</td>
+            <td style="border: 1px solid #000; padding: 8px; width: 35%; white-space: nowrap;">${displayKey}</td>
             <td style="border: 1px solid #000; padding: 8px; width: 65%; white-space: normal; word-break: break-word;">${value}</td>
           </tr>
         `;
@@ -331,6 +332,7 @@ companySelect.addEventListener("change", function () {
         document.getElementById("loadNumberSection").style.display = "none";
         document.getElementById("tireQuestions").style.display = "none";
         document.getElementById("damageDetails").classList.add("d-none");
+        document.getElementById("driverTypeSection").style.display = "none";
         if (otherCompanyContainer) {
           otherCompanyContainer.style.display = "none";
         }
