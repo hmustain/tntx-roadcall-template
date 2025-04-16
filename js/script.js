@@ -43,26 +43,28 @@ document.addEventListener("DOMContentLoaded", function () {
   // Initially display the first step
   showStep(currentStep);
 
-  // Dynamic section: FedEx/Other Company details (Step 1)
-  var companySelect = document.getElementById("company");
-  var fedexDetails = document.getElementById("fedexDetails");
-  var otherCompanyContainer = document.getElementById("otherCompanyContainer");
+ // Dynamic section: FedEx/Other Company/Big M details (Step 1)
+var companySelect = document.getElementById("company");
+var fedexDetails = document.getElementById("fedexDetails");
+var otherCompanyContainer = document.getElementById("otherCompanyContainer");
+// NEW: Reference for the Driver Type section for Big M
+var driverTypeSection = document.getElementById("driverTypeSection");
 
-  companySelect.addEventListener("change", function () {
-    if (this.value === "FedEx") {
-      showSection(fedexDetails);
-      // Ensure the Other Company container is hidden
-      otherCompanyContainer.style.display = "none";
-    } else if (this.value === "Other") {
-      showSection(otherCompanyContainer);
-      // Ensure the FedEx details are hidden
-      fedexDetails.style.display = "none";
-    } else {
-      // For any other company, hide both extra sections
-      fedexDetails.style.display = "none";
-      otherCompanyContainer.style.display = "none";
-    }
-  });
+companySelect.addEventListener("change", function () {
+  // Hide all dynamic sections first
+  fedexDetails.style.display = "none";
+  otherCompanyContainer.style.display = "none";
+  driverTypeSection.style.display = "none";
+
+  if (this.value === "FedEx") {
+    showSection(fedexDetails);
+  } else if (this.value === "Other") {
+    showSection(otherCompanyContainer);
+  } else if (this.value === "Big M") {
+    showSection(driverTypeSection);
+  }
+});
+
 
   // Dynamic section: Load number and weight if trailer is loaded (Step 5)
   var loadStatusSelect = document.getElementById("loadStatus");
