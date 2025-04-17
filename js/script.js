@@ -283,6 +283,7 @@ companySelect.addEventListener("change", function () {
       tableHtml += `
       <div class="d-flex justify-content-end mt-3 mb-5">
         <button id="newForm" type="button" class="btn btn-primary me-2">New Form</button>
+        <button id="editTable" type="button" class="btn btn-primary me-2"> Edit Table</button>
         <button id="copyTable" type="button" class="btn btn-primary">Copy Table</button>
       </div>
     `;
@@ -323,6 +324,22 @@ companySelect.addEventListener("change", function () {
               });
           }
         });
+
+        // Toggle edit/save
+let isEditing = false;
+const editBtn    = document.getElementById("editTable");
+const reportTbl  = document.getElementById("report").querySelector("table");
+
+editBtn.addEventListener("click", () => {
+  isEditing = !isEditing;
+  // Enable or disable contentEditable on the whole table
+  reportTbl.contentEditable = isEditing;
+  // Swap the button label
+  editBtn.textContent = isEditing ? "Save Table" : "Edit Table";
+  // Optionally, focus the table when entering edit mode
+  if (isEditing) reportTbl.focus();
+});
+
 
       // Attach event listener to the "New Form" button (inside the submission handler)
       document.getElementById("newForm").addEventListener("click", function () {
