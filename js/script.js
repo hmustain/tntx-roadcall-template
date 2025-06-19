@@ -218,40 +218,53 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
 
-      // Build the subject line using keys:
-      // "RC# Company UnitType UnitNumber Complaint City, State"
+      // Build the subject line
       var subjectLine = "";
-      if (data["RC #?"]) {
-        // 1) RC#
-        subjectLine += "RC" + data["RC #?"];
 
-        // 2) /LD# for Big M or RE Garrison
+      // 1) RC# and optional /LD# + Customer Name
+      if (data["RC #?"]) {
+        subjectLine += "RC" + data["RC #?"];
         if (data["Load Number"] && (data["Company"] === "Big M" || data["Company"] === "RE Garrison")) {
           subjectLine += "/LD" + data["Load Number"];
-
-          // 3) For RE Garrison, add Customer Name
           if (data["Company"] === "RE Garrison" && data["Customer Name"]) {
             subjectLine += " " + data["Customer Name"];
           }
         }
-
-        // separator before the rest
-        subjectLine += " - ";
+        // two spaces before the dash per your example
+        subjectLine += "  - ";
       }
 
-      // 4) Append Company, UnitType/Number, Complaint, Location
+      // 2) Company + unit info
       if (data["Company"]) {
-        subjectLine += data["Company"];
-        if (unitType) subjectLine += " " + unitType;
-        if (unitNumber) subjectLine += " " + unitNumber;
+        if (data["Company"] === "RE Garrison") {
+          // always prefix with the company name
+          subjectLine += "RE Garrison";
+          // then TRK # / TRL #
+          if (data["Truck Number"]) {
+            subjectLine += " TRK " + data["Truck Number"];
+          }
+          if (data["Trailer Number"]) {
+            subjectLine += "/TRL " + data["Trailer Number"];
+          }
+        } else {
+          // your generic logic for other companies
+          subjectLine += data["Company"];
+          if (unitType) subjectLine += " " + unitType;
+          if (unitNumber) subjectLine += " " + unitNumber;
+        }
         subjectLine += " - ";
       }
+
+      // 3) Complaint
       if (data["Complaint"]) {
         subjectLine += data["Complaint"] + " - ";
       }
+
+      // 4) Location
       if (data["City"] && data["State"]) {
         subjectLine += data["City"] + ", " + data["State"];
       }
+
 
       // Get the current date and time (formatted as before)
       var now = new Date();
