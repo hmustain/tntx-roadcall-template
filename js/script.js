@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Dynamic section: Load number, weight, + RE Garrison fields (Step 6)
+  // Dynamic section: Load number, weight (non-RE Garrison) & RE Garrison fields (Step 6)
   var loadStatusSelect = document.getElementById("loadStatus");
   var loadNumberSection = document.getElementById("loadNumberSection");
   var weightSection = document.getElementById("weightSection");
@@ -77,11 +77,14 @@ document.addEventListener("DOMContentLoaded", function () {
   loadStatusSelect.addEventListener("change", function () {
     var isLoaded = this.value === "loaded";
 
-    // always toggle load number & weight
+    // toggle Load Number for all companies
     loadNumberSection.style.display = isLoaded ? "block" : "none";
-    weightSection.style.display = isLoaded ? "block" : "none";
+    // toggle Weight only if NOT RE Garrison
+    weightSection.style.display = (isLoaded && companySelect.value !== "RE Garrison")
+      ? "block"
+      : "none";
 
-    // only show RE Garrison fields when loaded + that company
+    // RE Garrison: show Destination & Customer Name when loaded
     if (isLoaded && companySelect.value === "RE Garrison") {
       destinationSection.style.display = "block";
       customerNameSection.style.display = "block";
@@ -90,7 +93,6 @@ document.addEventListener("DOMContentLoaded", function () {
       customerNameSection.style.display = "none";
     }
   });
-
 
   // Event Listener for rewrite with AI Button to call on OpenAI API
   // document
