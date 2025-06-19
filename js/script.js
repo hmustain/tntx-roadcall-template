@@ -51,15 +51,22 @@ document.addEventListener("DOMContentLoaded", function () {
   var driverTypeSection = document.getElementById("driverTypeSection");
   var destinationSection = document.getElementById("destinationSection");
   var customerNameSection = document.getElementById("customerNameSection");
+  // Accident fields (Step 1)
+  var accidentSection = document.getElementById("accidentSection");
+  var accidentLinkSection = document.getElementById("accidentLinkSection");
+  var accidentSelect = document.getElementById("accidentSelect");
 
   companySelect.addEventListener("change", function () {
-    // Hide all dynamic sections first
+    // Hide everything first
     fedexDetails.style.display = "none";
     otherCompanyContainer.style.display = "none";
     driverTypeSection.style.display = "none";
     destinationSection.style.display = "none";
     customerNameSection.style.display = "none";
+    accidentSection.style.display = "none";
+    accidentLinkSection.style.display = "none";
 
+    // Your existing company-specific logic…
     if (this.value === "FedEx") {
       showSection(fedexDetails);
     } else if (this.value === "Other") {
@@ -67,7 +74,18 @@ document.addEventListener("DOMContentLoaded", function () {
     } else if (this.value === "Big M") {
       showSection(driverTypeSection);
     }
+
+    // New: Show accident question for RE Garrison
+    if (this.value === "RE Garrison") {
+      accidentSection.style.display = "block";
+    }
   });
+
+  // New: Show the PDF link when they pick “Yes” in the accident dropdown
+  accidentSelect.addEventListener("change", function () {
+    accidentLinkSection.style.display = (this.value === "yes") ? "block" : "none";
+  });
+
 
   // Dynamic section: Load number, weight (non-RE Garrison) & RE Garrison fields (Step 6)
   var loadStatusSelect = document.getElementById("loadStatus");

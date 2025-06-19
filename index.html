@@ -151,6 +151,23 @@
             </label>
           </div>
         </div>
+        <!-- Accident question (only for RE Garrison) -->
+        <div class="mb-3" id="accidentSection" style="display: none">
+          <label for="accidentSelect" class="form-label">Is this an accident?</label>
+          <select id="accidentSelect" name="Accident?" class="form-select">
+            <option value="" disabled selected>Please choose…</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+
+        <!-- PDF download link -->
+        <div class="mb-3" id="accidentLinkSection" style="display: none">
+          <a href="images/RE-Garrison-Claims-Form.pdf" target="_blank" class="btn btn-outline-secondary">
+            Download Accident Form
+          </a>
+        </div>
+
         <!-- Container for "Other" Company (hidden by default) -->
         <div id="otherCompanyContainer" style="display: none">
           <label for="otherCompany" class="form-label">Please Specify Company</label>
