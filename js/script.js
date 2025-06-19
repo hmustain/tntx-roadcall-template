@@ -43,43 +43,54 @@ document.addEventListener("DOMContentLoaded", function () {
   // Initially display the first step
   showStep(currentStep);
 
- // Dynamic section: FedEx/Other Company/Big M details (Step 1)
-var companySelect = document.getElementById("company");
-var fedexDetails = document.getElementById("fedexDetails");
-var otherCompanyContainer = document.getElementById("otherCompanyContainer");
-// NEW: Reference for the Driver Type section for Big M
-var driverTypeSection = document.getElementById("driverTypeSection");
+  // Dynamic section: FedEx/Other Company/Big M details (Step 1)
+  var companySelect = document.getElementById("company");
+  var fedexDetails = document.getElementById("fedexDetails");
+  var otherCompanyContainer = document.getElementById("otherCompanyContainer");
+  // NEW: Reference for the Driver Type section for Big M & REG
+  var driverTypeSection = document.getElementById("driverTypeSection");
+  var destinationSection = document.getElementById("destinationSection");
+  var customerNameSection = document.getElementById("customerNameSection");
 
-companySelect.addEventListener("change", function () {
-  // Hide all dynamic sections first
-  fedexDetails.style.display = "none";
-  otherCompanyContainer.style.display = "none";
-  driverTypeSection.style.display = "none";
+  companySelect.addEventListener("change", function () {
+    // Hide all dynamic sections first
+    fedexDetails.style.display = "none";
+    otherCompanyContainer.style.display = "none";
+    driverTypeSection.style.display = "none";
+    destinationSection.style.display = "none";
+    customerNameSection.style.display = "none";
 
-  if (this.value === "FedEx") {
-    showSection(fedexDetails);
-  } else if (this.value === "Other") {
-    showSection(otherCompanyContainer);
-  } else if (this.value === "Big M") {
-    showSection(driverTypeSection);
-  }
-});
+    if (this.value === "FedEx") {
+      showSection(fedexDetails);
+    } else if (this.value === "Other") {
+      showSection(otherCompanyContainer);
+    } else if (this.value === "Big M") {
+      showSection(driverTypeSection);
+    }
+  });
 
-
-  // Dynamic section: Load number and weight if trailer is loaded (Step 5)
+  // Dynamic section: Load number, weight, + RE Garrison fields (Step 6)
   var loadStatusSelect = document.getElementById("loadStatus");
   var loadNumberSection = document.getElementById("loadNumberSection");
   var weightSection = document.getElementById("weightSection");
 
   loadStatusSelect.addEventListener("change", function () {
-    if (this.value === "loaded") {
-      showSection(loadNumberSection);
-      showSection(weightSection);
+    var isLoaded = this.value === "loaded";
+
+    // always toggle load number & weight
+    loadNumberSection.style.display = isLoaded ? "block" : "none";
+    weightSection.style.display = isLoaded ? "block" : "none";
+
+    // only show RE Garrison fields when loaded + that company
+    if (isLoaded && companySelect.value === "RE Garrison") {
+      destinationSection.style.display = "block";
+      customerNameSection.style.display = "block";
     } else {
-      loadNumberSection.style.display = "none";
-      weightSection.style.display = "none";
+      destinationSection.style.display = "none";
+      customerNameSection.style.display = "none";
     }
   });
+
 
   // Event Listener for rewrite with AI Button to call on OpenAI API
   // document
@@ -93,35 +104,35 @@ companySelect.addEventListener("change", function () {
   //       return;
   //     }
 
-      // Disable the button and show loading state
-    //   this.disabled = true;
-    //   const originalButtonHTML = this.innerHTML; // fixed variable name
-    //   this.innerHTML = "Rewriting...";
+  // Disable the button and show loading state
+  //   this.disabled = true;
+  //   const originalButtonHTML = this.innerHTML; // fixed variable name
+  //   this.innerHTML = "Rewriting...";
 
-    //   try {
-    //     const response = await fetch("/rewrite", {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //       body: JSON.stringify({ text: originalText }),
-    //     });
-    //     if (response.ok) {
-    //       const data = await response.json();
-    //       descriptionField.value = data.rewrittenText;
-    //     } else {
-    //       const errorText = await response.text();
-    //       console.error("Error Response:", errorText);
-    //       alert("Error rewriting text: " + response.statusText);
-    //     }
-    //   } catch (error) {
-    //     console.error("Error calling /rewrite endpoint:", error);
-    //     alert("An error occurred while rewriting the text.");
-    //   } finally {
-    //     this.disabled = false;
-    //     this.innerHTML = originalButtonHTML;
-    //   }
-    // });
+  //   try {
+  //     const response = await fetch("/rewrite", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ text: originalText }),
+  //     });
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       descriptionField.value = data.rewrittenText;
+  //     } else {
+  //       const errorText = await response.text();
+  //       console.error("Error Response:", errorText);
+  //       alert("Error rewriting text: " + response.statusText);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error calling /rewrite endpoint:", error);
+  //     alert("An error occurred while rewriting the text.");
+  //   } finally {
+  //     this.disabled = false;
+  //     this.innerHTML = originalButtonHTML;
+  //   }
+  // });
 
   // Dynamic section: Tire-related questions (Step 8)
   var tireBreakdownSelect = document.getElementById("tireBreakdown");
@@ -191,20 +202,28 @@ companySelect.addEventListener("change", function () {
       // "RC# Company UnitType UnitNumber Complaint City, State"
       var subjectLine = "";
       if (data["RC #?"]) {
-        if (data["Company"] === "Big M" && data["Load Number"]) {
-          subjectLine += "RC" + data["RC #?"] + "/LD" + data["Load Number"] + " - ";
-        } else {
-          subjectLine += "RC" + data["RC #?"] + " - ";
+        // 1) RC#
+        subjectLine += "RC" + data["RC #?"];
+
+        // 2) /LD# for Big M or RE Garrison
+        if (data["Load Number"] && (data["Company"] === "Big M" || data["Company"] === "RE Garrison")) {
+          subjectLine += "/LD" + data["Load Number"];
+
+          // 3) For RE Garrison, add Customer Name
+          if (data["Company"] === "RE Garrison" && data["Customer Name"]) {
+            subjectLine += " " + data["Customer Name"];
+          }
         }
-      }      
+
+        // separator before the rest
+        subjectLine += " - ";
+      }
+
+      // 4) Append Company, UnitType/Number, Complaint, Location
       if (data["Company"]) {
         subjectLine += data["Company"];
-        if (unitType) {
-          subjectLine += " " + unitType;
-        }
-        if (unitNumber) {
-          subjectLine += " " + unitNumber;
-        }
+        if (unitType) subjectLine += " " + unitType;
+        if (unitNumber) subjectLine += " " + unitNumber;
         subjectLine += " - ";
       }
       if (data["Complaint"]) {
@@ -325,20 +344,20 @@ companySelect.addEventListener("change", function () {
           }
         });
 
-        // Toggle edit/save
-let isEditing = false;
-const editBtn    = document.getElementById("editTable");
-const reportTbl  = document.getElementById("report").querySelector("table");
+      // Toggle edit/save
+      let isEditing = false;
+      const editBtn = document.getElementById("editTable");
+      const reportTbl = document.getElementById("report").querySelector("table");
 
-editBtn.addEventListener("click", () => {
-  isEditing = !isEditing;
-  // Enable or disable contentEditable on the whole table
-  reportTbl.contentEditable = isEditing;
-  // Swap the button label
-  editBtn.textContent = isEditing ? "Save Table" : "Edit Table";
-  // Optionally, focus the table when entering edit mode
-  if (isEditing) reportTbl.focus();
-});
+      editBtn.addEventListener("click", () => {
+        isEditing = !isEditing;
+        // Enable or disable contentEditable on the whole table
+        reportTbl.contentEditable = isEditing;
+        // Swap the button label
+        editBtn.textContent = isEditing ? "Save Table" : "Edit Table";
+        // Optionally, focus the table when entering edit mode
+        if (isEditing) reportTbl.focus();
+      });
 
 
       // Attach event listener to the "New Form" button (inside the submission handler)
