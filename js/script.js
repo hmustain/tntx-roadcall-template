@@ -333,12 +333,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Append the buttons for "New Form" and "Copy Table"
       tableHtml += `
-      <div class="d-flex justify-content-end mt-3 mb-5">
-        <button id="newForm" type="button" class="btn btn-primary me-2">New Form</button>
-        <button id="editTable" type="button" class="btn btn-primary me-2"> Edit Table</button>
-        <button id="copyTable" type="button" class="btn btn-primary">Copy Table</button>
-      </div>
-    `;
+  <div class="d-flex justify-content-between mt-3 mb-5">
+    <button id="backToForm" type="button" class="btn btn-primary">Back</button>
+    <div>
+      <button id="newForm"    type="button" class="btn btn-primary me-2">New Form</button>
+      <button id="editTable"  type="button" class="btn btn-primary me-2">Edit Table</button>
+      <button id="copyTable"  type="button" class="btn btn-primary">Copy Table</button>
+    </div>
+  </div>
+`;
 
       // Hide the form and display the report
       document.getElementById("roadCallForm").style.display = "none";
@@ -346,6 +349,15 @@ document.addEventListener("DOMContentLoaded", function () {
       reportContainer.innerHTML = tableHtml;
       reportContainer.style.display = "block";
       reportContainer.scrollIntoView({ behavior: "smooth", block: "center" });
+
+      // Back to form Event Listener
+      document.getElementById("backToForm").addEventListener("click", function () {
+        // hide the report, show the form (preserving current values)
+        reportContainer.style.display = "none";
+        document.getElementById("roadCallForm").style.display = "block";
+        // restore to the last step
+        showStep(currentStep);
+      });
 
       // Attach event listener to the "Copy Table" button
       document
