@@ -220,22 +220,44 @@ document.addEventListener("DOMContentLoaded", function () {
     var dateString = monthAbbrev + " " + day;
     var timeString = hours12 + ":" + minutes + " " + ampm;
 
-    // Build table
-    var tableHtml = `
-      <table style="width:100%; border-collapse: collapse;">
-        <thead style="background-color: #d3d3de; color: #000;">
-          <tr>
-            <th colspan="2" style="border: 1px solid #000; padding: 8px; text-align: center;">
-              ${subjectLine}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style="border: 1px solid #000; padding: 8px; width: 35%;">Date / Time</td>
-            <td style="border: 1px solid #000; padding: 8px; width: 65%;">${dateString} - ${timeString}</td>
-          </tr>
-    `;
+// Build the table HTML with inline styles for formatting.
+var regHeaderAlert = "";
+if (data["Company"] === "RE Garrison") {
+  regHeaderAlert = `
+    <tr>
+      <th colspan="2"
+          style="border: 1px solid #000; padding: 8px;
+                 background-color: #fff3cd; /* yellow */
+                 color: #b10000;            /* bold red */
+                 font-weight: 800; text-align: center;">
+        Please Send All Invoices To
+        <a href="mailto:Roadside@regarrison.com"
+           style="color:#b10000; text-decoration: underline;">
+           Roadside@regarrison.com
+        </a>
+      </th>
+    </tr>
+  `;
+}
+
+var tableHtml = `
+  <table style="width:100%; border-collapse: collapse;">
+    <thead style="background-color: #d3d3de; color: #000;">
+      <tr>
+        <th colspan="2" style="border: 1px solid #000; padding: 8px; text-align: center;">
+          ${subjectLine}
+        </th>
+      </tr>
+      ${regHeaderAlert}
+    </thead>
+    <tbody>
+      <tr>
+        <td style="border: 1px solid #000; padding: 8px; width: 35%; white-space: nowrap;">Date / Time</td>
+        <td style="border: 1px solid #000; padding: 8px; width: 65%; white-space: normal; word-break: break-word;">
+          ${dateString} - ${timeString}
+        </td>
+      </tr>
+`;
 
     // Inject Big M flag row if active
     var bigMFlagActive = data["Company"] === "Big M" && (data["Truck Number"] || "").trim() === "1455";
@@ -251,20 +273,24 @@ document.addEventListener("DOMContentLoaded", function () {
       `;
     }
 
-    Object.keys(data).forEach(function (key) {
-      var displayKey = key === "driverType" ? "Driver Type" : key;
-      var value = data[key];
-      if (value.trim() !== "") {
-        tableHtml += `
-          <tr>
-            <td style="border: 1px solid #000; padding: 8px; width: 35%;">${displayKey}</td>
-            <td style="border: 1px solid #000; padding: 8px; width: 65%;">${value}</td>
-          </tr>
-        `;
-      }
-    });
+// Loop through the data object and add rows for each field with proper styling
+Object.keys(data).forEach(function (key) {
+  var displayKey = key === "driverType" ? "Driver Type" : key;
+  var value = data[key];
+  if (value.trim() !== "") {
+    tableHtml += `
+      <tr>
+        <td style="border: 1px solid #000; padding: 8px; width: 35%; white-space: nowrap;">${displayKey}</td>
+        <td style="border: 1px solid #000; padding: 8px; width: 65%; white-space: normal; word-break: break-word;">${value}</td>
+      </tr>
+    `;
+  }
+});
 
-    tableHtml += `</tbody></table>`;
+tableHtml += `
+    </tbody>
+  </table>
+`;
 
     tableHtml += `
       <div class="d-flex justify-content-between mt-3 mb-5">
