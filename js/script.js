@@ -103,13 +103,13 @@ document.addEventListener("DOMContentLoaded", function () {
       truck: "1455",
       driver: "John Barresi",
       phone: "615-502-9938",
-      message: "Must call Big M for ANY approvals before work is done.\nExceptions: after-hours + FedEx load OR roadside emergency."
+      message: "Must call Big M for ANY approvals before work is done.\nExceptions:FedEx load OR roadside emergency."
     },
     {
       truck: "1335",
       driver: "David Glade",
       phone: "",
-      message: "Must call Big M for ANY approvals before work is done.\nExceptions: after-hours + FedEx load OR roadside emergency."
+      message: "Must call Big M for ANY approvals before work is done.\nExceptions:FedEx load OR roadside emergency."
     }
   ];
 
