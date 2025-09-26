@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function () {
       message: "Must call Big M for ANY approvals before work is done.\nExceptions:FedEx load OR roadside emergency."
     },
     {
-      truck: "1335",
+      truck: "1484",
       driver: "David Glade",
       phone: "",
       message: "Must call Big M for ANY approvals before work is done.\nExceptions:FedEx load OR roadside emergency."
