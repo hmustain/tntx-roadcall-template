@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
     stepElement.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
+  // Nav buttons
   document.querySelectorAll(".next-step").forEach(function (button) {
     button.addEventListener("click", function () {
       if (currentStep < totalSteps) {
@@ -36,6 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+  // Show first step
   showStep(currentStep);
 
   // === Dynamic sections ===
@@ -46,11 +48,13 @@ document.addEventListener("DOMContentLoaded", function () {
   var destinationSection = document.getElementById("destinationSection");
   var customerNameSection = document.getElementById("customerNameSection");
 
+  // Accident fields (Step 1)
   var accidentSection = document.getElementById("accidentSection");
   var accidentLinkSection = document.getElementById("accidentLinkSection");
   var accidentSelect = document.getElementById("accidentSelect");
 
   companySelect.addEventListener("change", function () {
+    // Reset all conditional sections
     fedexDetails.style.display = "none";
     otherCompanyContainer.style.display = "none";
     driverTypeSection.style.display = "none";
@@ -64,14 +68,16 @@ document.addEventListener("DOMContentLoaded", function () {
     if (this.value === "Big M") showSection(driverTypeSection);
     if (this.value === "RE Garrison") accidentSection.style.display = "block";
 
+    // Re-evaluate banners when company changes
     updateBigMFlagBanner();
+    updateBigMTireBanner();
   });
 
   accidentSelect.addEventListener("change", function () {
     accidentLinkSection.style.display = (this.value === "yes") ? "block" : "none";
   });
 
-  // === Load number / weight / destination ===
+  // === Load number / weight / destination (Step 6) ===
   var loadStatusSelect = document.getElementById("loadStatus");
   var loadNumberSection = document.getElementById("loadNumberSection");
   var weightSection = document.getElementById("weightSection");
@@ -79,8 +85,10 @@ document.addEventListener("DOMContentLoaded", function () {
   loadStatusSelect.addEventListener("change", function () {
     var isLoaded = this.value === "loaded";
     loadNumberSection.style.display = isLoaded ? "block" : "none";
+    // Weight only for non-RE Garrison
     weightSection.style.display = (isLoaded && companySelect.value !== "RE Garrison") ? "block" : "none";
 
+    // RE Garrison: Destination + Customer Name when loaded
     if (isLoaded && companySelect.value === "RE Garrison") {
       destinationSection.style.display = "block";
       customerNameSection.style.display = "block";
@@ -90,26 +98,26 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // === Big M Driver Flag Banner ===
+  // === Big M Driver Flag Banner (always on-screen, not in report) ===
   var truckInput = document.getElementById("truck");
   var bigMFlagBanner = document.createElement("div");
   bigMFlagBanner.id = "bigMFlagBanner";
   bigMFlagBanner.className = "alert alert-danger d-none";
   bigMFlagBanner.style.whiteSpace = "pre-wrap";
 
-  // List of flagged trucks
+  // Flagged trucks list (1455 & 1335)
   const bigMDriverFlags = [
     {
       truck: "1455",
       driver: "John Barresi",
       phone: "615-502-9938",
-      message: "Must call Big M for ANY approvals before work is done.\nExceptions:FedEx load OR roadside emergency."
+      message: "Must call Big M for ANY approvals before work is done.\nExceptions: after-hours + FedEx load OR roadside emergency.\nQuestions: contact Big M or Travis."
     },
     {
-      truck: "1484",
+      truck: "1335",
       driver: "David Glade",
       phone: "",
-      message: "Must call Big M for ANY approvals before work is done.\nExceptions:FedEx load OR roadside emergency."
+      message: "Must call Big M for ANY approvals before work is done.\nExceptions: after-hours + FedEx load OR roadside emergency.\nQuestions: contact Big M or Travis."
     }
   ];
 
@@ -118,7 +126,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const truckNumber = (truckInput.value || "").trim();
     const matchedFlag = bigMDriverFlags.find(f => f.truck === truckNumber);
     if (isBigM && matchedFlag) {
-      bigMFlagBanner.innerHTML = `🚨 BIG M – UNIT ${matchedFlag.truck} (Driver: ${matchedFlag.driver}${matchedFlag.phone ? `, ${matchedFlag.phone}` : ""})\n${matchedFlag.message}`;
+      bigMFlagBanner.textContent =
+        `🚨 BIG M – UNIT ${matchedFlag.truck} (Driver: ${matchedFlag.driver}${matchedFlag.phone ? `, ${matchedFlag.phone}` : ""})\n${matchedFlag.message}`;
       bigMFlagBanner.classList.remove("d-none");
     } else {
       bigMFlagBanner.classList.add("d-none");
@@ -126,23 +135,48 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   var formEl = document.getElementById("roadCallForm");
+  // Insert driver banner above form
   formEl.parentNode.insertBefore(bigMFlagBanner, formEl);
+
   companySelect.addEventListener("change", updateBigMFlagBanner);
   truckInput.addEventListener("input", updateBigMFlagBanner);
   updateBigMFlagBanner();
 
-  // === Tire questions & damage details ===
+  // === Big M Tire Policy Banner (Step 8: Tires = Yes) ===
   var tireBreakdownSelect = document.getElementById("tireBreakdown");
   var tireQuestions = document.getElementById("tireQuestions");
+
+  // Create tire banner (on-screen only)
+  var bigMTireBanner = document.createElement("div");
+  bigMTireBanner.id = "bigMTireBanner";
+  bigMTireBanner.className = "alert alert-warning d-none";
+  bigMTireBanner.style.whiteSpace = "pre-wrap";
+  bigMTireBanner.textContent =
+    "⚠️ BIG M Tire Policy: If this breakdown involves more than 2 tires, Big M shop must approve work before proceeding.";
+
+  // Insert tire banner above form (below driver banner visually)
+  formEl.parentNode.insertBefore(bigMTireBanner, formEl);
+
+  function updateBigMTireBanner() {
+    var isBigM = companySelect.value === "Big M";
+    var isTireRelated = (tireBreakdownSelect.value || "") === "yes";
+    bigMTireBanner.classList.toggle("d-none", !(isBigM && isTireRelated));
+  }
+
   tireBreakdownSelect.addEventListener("change", function () {
+    // Show tire-specific questions as before
     if (this.value === "yes") {
       showSection(tireQuestions);
-      setTimeout(() => document.getElementById("step-8").scrollIntoView({ behavior: "smooth", block: "end" }), 100);
+      setTimeout(() => document.getElementById("step-8")
+        .scrollIntoView({ behavior: "smooth", block: "end" }), 100);
     } else {
       tireQuestions.style.display = "none";
     }
+    // Update the tire banner visibility
+    updateBigMTireBanner();
   });
 
+  // === Damage details (inside tire questions) ===
   var damageSelect = document.getElementById("damage");
   var damageDetails = document.getElementById("damageDetails");
   damageSelect.addEventListener("change", function () {
@@ -177,7 +211,9 @@ document.addEventListener("DOMContentLoaded", function () {
       subjectLine += "RC" + data["RC #?"];
       if (data["Load Number"] && (data["Company"] === "Big M" || data["Company"] === "RE Garrison")) {
         subjectLine += "/LD" + data["Load Number"];
-        if (data["Company"] === "RE Garrison" && data["Customer Name"]) subjectLine += " " + data["Customer Name"];
+        if (data["Company"] === "RE Garrison" && data["Customer Name"]) {
+          subjectLine += " " + data["Customer Name"];
+        }
       }
       subjectLine += "  - ";
     }
@@ -207,7 +243,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var minutes = String(now.getMinutes()).padStart(2, "0");
     var timeString = hours12 + ":" + minutes + " " + ampm;
 
-    // Build table
+    // Build table (RE Garrison invoice banner in header if applicable)
     var regHeaderAlert = "";
     if (data["Company"] === "RE Garrison") {
       regHeaderAlert = `
@@ -238,6 +274,7 @@ document.addEventListener("DOMContentLoaded", function () {
           </tr>
     `;
 
+    // Add form fields
     Object.keys(data).forEach(function (key) {
       var displayKey = key === "driverType" ? "Driver Type" : key;
       var value = data[key];
@@ -253,7 +290,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     tableHtml += `</tbody></table>`;
 
-    // Append buttons
+    // Buttons under report
     tableHtml += `
       <div class="d-flex justify-content-between mt-3 mb-5">
         <button id="backToForm" type="button" class="btn btn-primary">Back</button>
@@ -272,13 +309,17 @@ document.addEventListener("DOMContentLoaded", function () {
     reportContainer.style.display = "block";
     reportContainer.scrollIntoView({ behavior: "smooth", block: "center" });
 
+    // Back to form
     document.getElementById("backToForm").addEventListener("click", function () {
       reportContainer.style.display = "none";
       document.getElementById("roadCallForm").style.display = "block";
       showStep(currentStep);
-      updateBigMFlagBanner(); // re-show banner if applicable
+      // Re-evaluate banners when returning to form
+      updateBigMFlagBanner();
+      updateBigMTireBanner();
     });
 
+    // Copy Table
     document.getElementById("copyTable").addEventListener("click", function () {
       var tableElement = reportContainer.querySelector("table");
       if (tableElement) {
@@ -292,6 +333,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
+    // Edit Table (contentEditable)
     let isEditing = false;
     const editBtn = document.getElementById("editTable");
     const reportTbl = reportContainer.querySelector("table");
@@ -302,6 +344,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (isEditing) reportTbl.focus();
     });
 
+    // New Form (reset)
     document.getElementById("newForm").addEventListener("click", function () {
       var form = document.getElementById("roadCallForm");
       form.reset();
@@ -311,7 +354,11 @@ document.addEventListener("DOMContentLoaded", function () {
       damageDetails.classList.add("d-none");
       driverTypeSection.style.display = "none";
       if (otherCompanyContainer) otherCompanyContainer.style.display = "none";
+
+      // Hide both banners when starting fresh
       bigMFlagBanner.classList.add("d-none");
+      bigMTireBanner.classList.add("d-none");
+
       form.style.display = "block";
       reportContainer.style.display = "none";
       currentStep = 1;
