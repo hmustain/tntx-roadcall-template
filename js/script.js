@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
     stepElement.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
+  // Next / Prev buttons
   document.querySelectorAll(".next-step").forEach(function (button) {
     button.addEventListener("click", function () {
       if (currentStep < totalSteps) {
@@ -36,6 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+  // Start on step 1
   showStep(currentStep);
 
   // === Dynamic sections ===
@@ -46,11 +48,13 @@ document.addEventListener("DOMContentLoaded", function () {
   var destinationSection = document.getElementById("destinationSection");
   var customerNameSection = document.getElementById("customerNameSection");
 
+  // Accident (Step 1)
   var accidentSection = document.getElementById("accidentSection");
   var accidentLinkSection = document.getElementById("accidentLinkSection");
   var accidentSelect = document.getElementById("accidentSelect");
 
   companySelect.addEventListener("change", function () {
+    // Hide all step-1 dynamics
     fedexDetails.style.display = "none";
     otherCompanyContainer.style.display = "none";
     driverTypeSection.style.display = "none";
@@ -64,7 +68,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if (this.value === "Big M") showSection(driverTypeSection);
     if (this.value === "RE Garrison") accidentSection.style.display = "block";
 
+    // Re-evaluate banners on company change
     updateBigMFlagBanner();
+    updateBigMTireBanner();
   });
 
   accidentSelect.addEventListener("change", function () {
@@ -79,6 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
   loadStatusSelect.addEventListener("change", function () {
     var isLoaded = this.value === "loaded";
     loadNumberSection.style.display = isLoaded ? "block" : "none";
+    // Hide weight for RE Garrison, show for others when loaded
     weightSection.style.display = (isLoaded && companySelect.value !== "RE Garrison") ? "block" : "none";
 
     if (isLoaded && companySelect.value === "RE Garrison") {
@@ -90,26 +97,31 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // === Big M Driver Flag Banner ===
+  // === Big M Driver Flag Banner (screen-only) ===
   var truckInput = document.getElementById("truck");
+
   var bigMFlagBanner = document.createElement("div");
   bigMFlagBanner.id = "bigMFlagBanner";
   bigMFlagBanner.className = "alert alert-danger d-none";
   bigMFlagBanner.style.whiteSpace = "pre-wrap";
 
-  // List of flagged trucks
+  // Insert banner right above the form
+  var formEl = document.getElementById("roadCallForm");
+  formEl.parentNode.insertBefore(bigMFlagBanner, formEl);
+
+  // Flagged trucks list (screen banner only)
   const bigMDriverFlags = [
     {
       truck: "1455",
       driver: "John Barresi",
       phone: "615-502-9938",
-      message: "Must call Big M for ANY approvals before work is done.\nExceptions:FedEx load OR roadside emergency."
+      message: "Must call Big M for ANY approvals before work is done.\nExceptions: after-hours + FedEx load OR roadside emergency.\nQuestions: contact Big M or Travis."
     },
     {
-      truck: "1484",
+      truck: "1335",
       driver: "David Glade",
       phone: "",
-      message: "Must call Big M for ANY approvals before work is done.\nExceptions:FedEx load OR roadside emergency."
+      message: "Must call Big M for ANY approvals before work is done.\nExceptions: after-hours + FedEx load OR roadside emergency.\nQuestions: contact Big M or Travis."
     }
   ];
 
@@ -117,51 +129,77 @@ document.addEventListener("DOMContentLoaded", function () {
     const isBigM = companySelect.value === "Big M";
     const truckNumber = (truckInput.value || "").trim();
     const matchedFlag = bigMDriverFlags.find(f => f.truck === truckNumber);
+
     if (isBigM && matchedFlag) {
-      bigMFlagBanner.innerHTML = `🚨 BIG M – UNIT ${matchedFlag.truck} (Driver: ${matchedFlag.driver}${matchedFlag.phone ? `, ${matchedFlag.phone}` : ""})\n${matchedFlag.message}`;
+      bigMFlagBanner.textContent =
+        `🚨 BIG M – UNIT ${matchedFlag.truck} ` +
+        `(Driver: ${matchedFlag.driver}${matchedFlag.phone ? `, ${matchedFlag.phone}` : ""})\n` +
+        `${matchedFlag.message}`;
       bigMFlagBanner.classList.remove("d-none");
     } else {
       bigMFlagBanner.classList.add("d-none");
     }
   }
 
-  var formEl = document.getElementById("roadCallForm");
-  formEl.parentNode.insertBefore(bigMFlagBanner, formEl);
   companySelect.addEventListener("change", updateBigMFlagBanner);
   truckInput.addEventListener("input", updateBigMFlagBanner);
   updateBigMFlagBanner();
 
-  // === Tire questions & damage details ===
+  // === Big M Tire Policy Banner (screen-only) ===
   var tireBreakdownSelect = document.getElementById("tireBreakdown");
-  var tireQuestions = document.getElementById("tireQuestions");
+
+  var bigMTireBanner = document.createElement("div");
+  bigMTireBanner.id = "bigMTireBanner";
+  bigMTireBanner.className = "alert alert-warning d-none";
+  bigMTireBanner.style.whiteSpace = "pre-wrap";
+  bigMTireBanner.textContent =
+    "⚠️ BIG M Tire Policy: If this breakdown involves more than 2 tires, Big M shop must approve work before proceeding.";
+
+  // Insert tire banner right above the form as well
+  formEl.parentNode.insertBefore(bigMTireBanner, formEl);
+
+  function updateBigMTireBanner() {
+    var isBigM = companySelect.value === "Big M";
+    var isTireRelated = tireBreakdownSelect.value === "yes";
+    bigMTireBanner.classList.toggle("d-none", !(isBigM && isTireRelated));
+  }
+
   tireBreakdownSelect.addEventListener("change", function () {
+    // Show/hide based on Big M + "yes"
+    updateBigMTireBanner();
+    // Additionally, show the tire questions UI when "yes"
     if (this.value === "yes") {
-      showSection(tireQuestions);
-      setTimeout(() => document.getElementById("step-8").scrollIntoView({ behavior: "smooth", block: "end" }), 100);
+      showSection(document.getElementById("tireQuestions"));
+      setTimeout(() => {
+        document.getElementById("step-8").scrollIntoView({ behavior: "smooth", block: "end" });
+      }, 100);
     } else {
-      tireQuestions.style.display = "none";
+      document.getElementById("tireQuestions").style.display = "none";
     }
   });
 
+  // === Damage details (inside tire questions) ===
   var damageSelect = document.getElementById("damage");
   var damageDetails = document.getElementById("damageDetails");
   damageSelect.addEventListener("change", function () {
     damageDetails.classList.toggle("d-none", this.value !== "yes");
   });
 
-  // === Generate Report ===
+  // === Generate Report (builds the email table) ===
   document.getElementById("roadCallForm").addEventListener("submit", function (e) {
     e.preventDefault();
 
     var formData = new FormData(this);
     var data = {};
-    formData.forEach((value, key) => data[key] = value);
+    formData.forEach((value, key) => (data[key] = value));
 
+    // Normalize "Other" company
     if (data["Company"] === "Other") {
       data["Company"] = data["Other Company"] || "Other";
       delete data["Other Company"];
     }
 
+    // Unit type / number
     var unitType = "", unitNumber = "";
     if (data["Unit Affected"]) {
       if (data["Unit Affected"].toLowerCase() === "tractor") {
@@ -171,13 +209,15 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
 
-    // Build subject line
+    // Subject line
     var subjectLine = "";
     if (data["RC #?"]) {
       subjectLine += "RC" + data["RC #?"];
       if (data["Load Number"] && (data["Company"] === "Big M" || data["Company"] === "RE Garrison")) {
         subjectLine += "/LD" + data["Load Number"];
-        if (data["Company"] === "RE Garrison" && data["Customer Name"]) subjectLine += " " + data["Customer Name"];
+        if (data["Company"] === "RE Garrison" && data["Customer Name"]) {
+          subjectLine += " " + data["Customer Name"];
+        }
       }
       subjectLine += "  - ";
     }
@@ -198,7 +238,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (data["Complaint"]) subjectLine += data["Complaint"] + " - ";
     if (data["City"] && data["State"]) subjectLine += data["City"] + ", " + data["State"];
 
-    // Date/Time
+    // Date / Time
     var now = new Date();
     var monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
     var dateString = monthNames[now.getMonth()] + " " + String(now.getDate()).padStart(2, "0");
@@ -207,7 +247,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var minutes = String(now.getMinutes()).padStart(2, "0");
     var timeString = hours12 + ":" + minutes + " " + ampm;
 
-    // Build table
+    // RE Garrison invoice banner row (header area)
     var regHeaderAlert = "";
     if (data["Company"] === "RE Garrison") {
       regHeaderAlert = `
@@ -225,19 +265,27 @@ document.addEventListener("DOMContentLoaded", function () {
       `;
     }
 
+    // Build the email table (no Big M alerts added here — banners are screen-only)
     var tableHtml = `
       <table style="width:100%; border-collapse: collapse;">
         <thead style="background-color: #d3d3de; color: #000;">
-          <tr><th colspan="2" style="border: 1px solid #000; padding: 8px; text-align: center;">${subjectLine}</th></tr>
+          <tr>
+            <th colspan="2" style="border: 1px solid #000; padding: 8px; text-align: center;">
+              ${subjectLine}
+            </th>
+          </tr>
           ${regHeaderAlert}
         </thead>
         <tbody>
           <tr>
             <td style="border: 1px solid #000; padding: 8px; width: 35%; white-space: nowrap;">Date / Time</td>
-            <td style="border: 1px solid #000; padding: 8px; width: 65%; word-break: break-word;">${dateString} - ${timeString}</td>
+            <td style="border: 1px solid #000; padding: 8px; width: 65%; word-break: break-word;">
+              ${dateString} - ${timeString}
+            </td>
           </tr>
     `;
 
+    // Add all filled fields
     Object.keys(data).forEach(function (key) {
       var displayKey = key === "driverType" ? "Driver Type" : key;
       var value = data[key];
@@ -253,7 +301,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     tableHtml += `</tbody></table>`;
 
-    // Append buttons
+    // Footer buttons under report
     tableHtml += `
       <div class="d-flex justify-content-between mt-3 mb-5">
         <button id="backToForm" type="button" class="btn btn-primary">Back</button>
@@ -265,20 +313,24 @@ document.addEventListener("DOMContentLoaded", function () {
       </div>
     `;
 
-    // Show report
-    document.getElementById("roadCallForm").style.display = "none";
+    // Show the report
+    var formNode = document.getElementById("roadCallForm");
     var reportContainer = document.getElementById("report");
+    formNode.style.display = "none";
     reportContainer.innerHTML = tableHtml;
     reportContainer.style.display = "block";
     reportContainer.scrollIntoView({ behavior: "smooth", block: "center" });
 
+    // Back to form (keep banners visible if applicable)
     document.getElementById("backToForm").addEventListener("click", function () {
       reportContainer.style.display = "none";
-      document.getElementById("roadCallForm").style.display = "block";
+      formNode.style.display = "block";
       showStep(currentStep);
-      updateBigMFlagBanner(); // re-show banner if applicable
+      updateBigMFlagBanner();
+      updateBigMTireBanner();
     });
 
+    // Copy table
     document.getElementById("copyTable").addEventListener("click", function () {
       var tableElement = reportContainer.querySelector("table");
       if (tableElement) {
@@ -287,11 +339,13 @@ document.addEventListener("DOMContentLoaded", function () {
         clonedTable.style.margin = "0";
         const blob = new Blob([clonedTable.outerHTML], { type: "text/html" });
         const clipboardItem = new ClipboardItem({ "text/html": blob });
-        navigator.clipboard.write([clipboardItem]).then(() => alert("Table copied to clipboard!"))
+        navigator.clipboard.write([clipboardItem])
+          .then(() => alert("Table copied to clipboard!"))
           .catch(err => alert("Error copying table: " + err));
       }
     });
 
+    // Edit table toggle
     let isEditing = false;
     const editBtn = document.getElementById("editTable");
     const reportTbl = reportContainer.querySelector("table");
@@ -302,20 +356,17 @@ document.addEventListener("DOMContentLoaded", function () {
       if (isEditing) reportTbl.focus();
     });
 
+    // New Form (reset + hide banners)
     document.getElementById("newForm").addEventListener("click", function () {
       var form = document.getElementById("roadCallForm");
       form.reset();
+
+      // Hide dynamic pieces
       fedexDetails.style.display = "none";
       loadNumberSection.style.display = "none";
-      tireQuestions.style.display = "none";
+      document.getElementById("tireQuestions").style.display = "none";
       damageDetails.classList.add("d-none");
       driverTypeSection.style.display = "none";
       if (otherCompanyContainer) otherCompanyContainer.style.display = "none";
-      bigMFlagBanner.classList.add("d-none");
-      form.style.display = "block";
-      reportContainer.style.display = "none";
-      currentStep = 1;
-      showStep(currentStep);
-    });
-  });
-});
+
+      // Hide ban
