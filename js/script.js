@@ -152,7 +152,7 @@ document.addEventListener("DOMContentLoaded", function () {
   bigMTireBanner.className = "alert alert-warning d-none";
   bigMTireBanner.style.whiteSpace = "pre-wrap";
   bigMTireBanner.textContent =
-    "⚠️ BIG M Tire Policy: If this breakdown involves more than 2 tires, Big M shop must approve work before proceeding.";
+    "⚠️ BIG M Tire Policy (Daytime Only): If this breakdown involves more than 2 tires, Big M shop must approve work before proceeding. For Nighttime, use your best judgement on approvals, you can email dispatch and ask them where the load is going to see if it's possible for driver to be routed to Big M Shop";
 
   // Insert tire banner above form (below driver banner visually)
   formEl.parentNode.insertBefore(bigMTireBanner, formEl);
