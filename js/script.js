@@ -98,12 +98,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
   loadStatusSelect.addEventListener("change", function () {
     var isLoaded = this.value === "loaded";
-    loadNumberSection.style.display = isLoaded ? "block" : "none";
-    // Weight only for non-RE Garrison
-    weightSection.style.display = (isLoaded && companySelect.value !== "RE Garrison") ? "block" : "none";
+    var isREGarrison = companySelect.value === "RE Garrison";
+    var isWoodfield = companySelect.value === "Woodfield";
+
+    // Load # section: show when loaded, but NOT for Woodfield
+    loadNumberSection.style.display = (isLoaded && !isWoodfield) ? "block" : "none";
+
+    // Weight section: show when loaded, but NOT for Woodfield and NOT for RE Garrison
+    weightSection.style.display = (isLoaded && !isWoodfield && !isREGarrison) ? "block" : "none";
 
     // RE Garrison: Destination + Customer Name when loaded
-    if (isLoaded && companySelect.value === "RE Garrison") {
+    if (isLoaded && isREGarrison) {
       destinationSection.style.display = "block";
       customerNameSection.style.display = "block";
     } else {
@@ -111,19 +116,23 @@ document.addEventListener("DOMContentLoaded", function () {
       customerNameSection.style.display = "none";
     }
 
-    // Woodfield: show Delivery + Class 1 when loaded
-    if (woodfieldDeliverySection && woodfieldClass1Section) {
-      if (isLoaded && companySelect.value === "Woodfield") {
-        woodfieldDeliverySection.style.display = "block";
+    // Woodfield: ONLY show Class 1 question when loaded
+    if (woodfieldClass1Section) {
+      if (isLoaded && isWoodfield) {
         woodfieldClass1Section.style.display = "block";
       } else {
-        woodfieldDeliverySection.style.display = "none";
         woodfieldClass1Section.style.display = "none";
       }
     }
 
+    // Customer request: NEVER show Woodfield delivery details anymore
+    if (woodfieldDeliverySection) {
+      woodfieldDeliverySection.style.display = "none";
+    }
+
     updateWoodfieldClass1Banner();
   });
+
 
   // === Big M Driver Flag Banner (always on-screen, not in report) ===
   var truckInput = document.getElementById("truck");
@@ -286,17 +295,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Date/Time
     var now = new Date();
-    var monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     var dateString = monthNames[now.getMonth()] + " " + String(now.getDate()).padStart(2, "0");
     var hours24 = now.getHours(), ampm = hours24 >= 12 ? "PM" : "AM";
     var hours12 = hours24 % 12 || 12;
     var minutes = String(now.getMinutes()).padStart(2, "0");
     var timeString = hours12 + ":" + minutes + " " + ampm;
 
-// Header alerts (report only)
-var regHeaderAlert = "";
-if (data["Company"] === "RE Garrison") {
-  regHeaderAlert = `
+    // Header alerts (report only)
+    var regHeaderAlert = "";
+    if (data["Company"] === "RE Garrison") {
+      regHeaderAlert = `
     <tr>
       <th colspan="2"
           style="border: 1px solid #000; padding: 8px;
@@ -309,12 +318,12 @@ if (data["Company"] === "RE Garrison") {
       </th>
     </tr>
   `;
-}
+    }
 
-// NEW: Woodfield header alert (always add when Company = Woodfield)
-var woodfieldHeaderEmailAlert = "";
-if (data["Company"] === "Woodfield") {
-  woodfieldHeaderEmailAlert = `
+    // NEW: Woodfield header alert (always add when Company = Woodfield)
+    var woodfieldHeaderEmailAlert = "";
+    if (data["Company"] === "Woodfield") {
+      woodfieldHeaderEmailAlert = `
     <tr>
       <th colspan="2"
           style="border: 1px solid #000; padding: 10px;
@@ -329,10 +338,10 @@ if (data["Company"] === "Woodfield") {
       </th>
     </tr>
   `;
-}
+    }
 
-// Build table (now includes RE Garrison & Woodfield header rows)
-var tableHtml = `
+    // Build table (now includes RE Garrison & Woodfield header rows)
+    var tableHtml = `
   <table style="width:100%; border-collapse: collapse;">
     <thead style="background-color: #d3d3de; color: #000;">
       <tr>
