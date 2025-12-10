@@ -53,6 +53,10 @@ document.addEventListener("DOMContentLoaded", function () {
   var accidentLinkSection = document.getElementById("accidentLinkSection");
   var accidentSelect = document.getElementById("accidentSelect");
 
+  // NEW: Woodfield (Step 1) DOD / Safe Transfer
+  var woodfieldDODSection = document.getElementById("woodfieldDODSection");
+  var woodfieldDOD = document.getElementById("woodfieldDOD");
+
   companySelect.addEventListener("change", function () {
     // Reset all conditional sections
     fedexDetails.style.display = "none";
@@ -62,15 +66,18 @@ document.addEventListener("DOMContentLoaded", function () {
     customerNameSection.style.display = "none";
     accidentSection.style.display = "none";
     accidentLinkSection.style.display = "none";
+    if (woodfieldDODSection) woodfieldDODSection.style.display = "none";
 
     if (this.value === "FedEx") showSection(fedexDetails);
     if (this.value === "Other") showSection(otherCompanyContainer);
     if (this.value === "Big M") showSection(driverTypeSection);
     if (this.value === "RE Garrison") accidentSection.style.display = "block";
+    if (this.value === "Woodfield" && woodfieldDODSection) showSection(woodfieldDODSection);
 
     // Re-evaluate banners when company changes
     updateBigMFlagBanner();
     updateBigMTireBanner();
+    updateWoodfieldClass1Banner();
   });
 
   accidentSelect.addEventListener("change", function () {
@@ -81,6 +88,13 @@ document.addEventListener("DOMContentLoaded", function () {
   var loadStatusSelect = document.getElementById("loadStatus");
   var loadNumberSection = document.getElementById("loadNumberSection");
   var weightSection = document.getElementById("weightSection");
+
+  // NEW: Woodfield extra when loaded
+  var woodfieldDeliverySection = document.getElementById("woodfieldDeliverySection");
+  var woodfieldDeliveryDest = document.getElementById("woodfieldDeliveryDest");
+  var woodfieldDeliveryDT = document.getElementById("woodfieldDeliveryDT");
+  var woodfieldClass1Section = document.getElementById("woodfieldClass1Section");
+  var woodfieldClass1 = document.getElementById("woodfieldClass1");
 
   loadStatusSelect.addEventListener("change", function () {
     var isLoaded = this.value === "loaded";
@@ -96,6 +110,19 @@ document.addEventListener("DOMContentLoaded", function () {
       destinationSection.style.display = "none";
       customerNameSection.style.display = "none";
     }
+
+    // Woodfield: show Delivery + Class 1 when loaded
+    if (woodfieldDeliverySection && woodfieldClass1Section) {
+      if (isLoaded && companySelect.value === "Woodfield") {
+        woodfieldDeliverySection.style.display = "block";
+        woodfieldClass1Section.style.display = "block";
+      } else {
+        woodfieldDeliverySection.style.display = "none";
+        woodfieldClass1Section.style.display = "none";
+      }
+    }
+
+    updateWoodfieldClass1Banner();
   });
 
   // === Big M Driver Flag Banner (always on-screen, not in report) ===
@@ -152,7 +179,7 @@ document.addEventListener("DOMContentLoaded", function () {
   bigMTireBanner.className = "alert alert-warning d-none";
   bigMTireBanner.style.whiteSpace = "pre-wrap";
   bigMTireBanner.textContent =
-    "⚠️ BIG M Tire Policy (Daytime Only): If this breakdown involves more than 2 tires, Big M shop must approve work before proceeding. For Nighttime, use your best judgement on approvals, you can email dispatch and ask them where the load is going to see if it's possible for driver to be routed to Big M Shop";
+    "⚠️ BIG M Tire Policy: If this breakdown involves more than 2 tires, Big M shop must approve work before proceeding.";
 
   // Insert tire banner above form (below driver banner visually)
   formEl.parentNode.insertBefore(bigMTireBanner, formEl);
@@ -182,6 +209,29 @@ document.addEventListener("DOMContentLoaded", function () {
   damageSelect.addEventListener("change", function () {
     damageDetails.classList.toggle("d-none", this.value !== "yes");
   });
+
+  // === Woodfield Class 1 on-screen banner (always on-screen, not in report) ===
+  var woodfieldClass1Banner = document.createElement("div");
+  woodfieldClass1Banner.id = "woodfieldClass1Banner";
+  woodfieldClass1Banner.className = "alert alert-danger d-none";
+  woodfieldClass1Banner.style.whiteSpace = "pre-wrap";
+  woodfieldClass1Banner.style.fontWeight = "800";
+  woodfieldClass1Banner.textContent =
+    "🚨 CLASS 1 LOAD — Remember: Class 1 loads cannot go into a building. Units can't move; repairs must be done on the road.";
+
+  // Insert under the other banners (above form)
+  formEl.parentNode.insertBefore(woodfieldClass1Banner, formEl);
+
+  function updateWoodfieldClass1Banner() {
+    var isWoodfield = companySelect.value === "Woodfield";
+    var isLoaded = loadStatusSelect.value === "loaded";
+    var class1Yes = woodfieldClass1 && woodfieldClass1.value === "yes";
+    woodfieldClass1Banner.classList.toggle("d-none", !(isWoodfield && isLoaded && class1Yes));
+  }
+
+  if (woodfieldClass1) {
+    woodfieldClass1.addEventListener("change", updateWoodfieldClass1Banner);
+  }
 
   // === Generate Report ===
   document.getElementById("roadCallForm").addEventListener("submit", function (e) {
@@ -243,7 +293,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var minutes = String(now.getMinutes()).padStart(2, "0");
     var timeString = hours12 + ":" + minutes + " " + ampm;
 
-    // Build table (RE Garrison invoice banner in header if applicable)
+    // Header alerts
     var regHeaderAlert = "";
     if (data["Company"] === "RE Garrison") {
       regHeaderAlert = `
@@ -261,11 +311,28 @@ document.addEventListener("DOMContentLoaded", function () {
       `;
     }
 
+    // NEW: Woodfield Class 1 header alert if Class 1 = yes
+    var woodfieldHeaderAlert = "";
+    if (data["Company"] === "Woodfield" && (data["Class 1 Load?"] || "").toLowerCase() === "yes") {
+      woodfieldHeaderAlert = `
+        <tr>
+          <th colspan="2"
+              style="border: 1px solid #000; padding: 10px;
+                     background-color: #ffeb99; /* bright yellow */
+                     color: #b10000; font-weight: 900; text-transform: uppercase; text-align: center;">
+            CLASS 1 LOAD — CANNOT GO INTO A BUILDING • UNIT CANNOT MOVE • REPAIRS MUST BE DONE ON THE ROAD
+          </th>
+        </tr>
+      `;
+    }
+
+    // Build table
     var tableHtml = `
       <table style="width:100%; border-collapse: collapse;">
         <thead style="background-color: #d3d3de; color: #000;">
           <tr><th colspan="2" style="border: 1px solid #000; padding: 8px; text-align: center;">${subjectLine}</th></tr>
           ${regHeaderAlert}
+          ${woodfieldHeaderAlert}
         </thead>
         <tbody>
           <tr>
@@ -317,6 +384,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // Re-evaluate banners when returning to form
       updateBigMFlagBanner();
       updateBigMTireBanner();
+      updateWoodfieldClass1Banner();
     });
 
     // Copy Table
@@ -355,9 +423,15 @@ document.addEventListener("DOMContentLoaded", function () {
       driverTypeSection.style.display = "none";
       if (otherCompanyContainer) otherCompanyContainer.style.display = "none";
 
-      // Hide both banners when starting fresh
+      // Hide banners when starting fresh
       bigMFlagBanner.classList.add("d-none");
       bigMTireBanner.classList.add("d-none");
+      woodfieldClass1Banner.classList.add("d-none");
+
+      // Hide Woodfield sections
+      if (woodfieldDODSection) woodfieldDODSection.style.display = "none";
+      if (woodfieldDeliverySection) woodfieldDeliverySection.style.display = "none";
+      if (woodfieldClass1Section) woodfieldClass1Section.style.display = "none";
 
       form.style.display = "block";
       reportContainer.style.display = "none";

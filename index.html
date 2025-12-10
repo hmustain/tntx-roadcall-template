@@ -169,6 +169,17 @@
           </a>
         </div>
 
+        <!-- Woodfield: DOD / Safe Transfer (only when Company = Woodfield) -->
+        <div class="mb-3" id="woodfieldDODSection" style="display:none">
+          <label for="woodfieldDOD" class="form-label">Is this a DOD/Safe Transfer Unit?</label>
+          <select id="woodfieldDOD" name="DOD/Safe Transfer Unit?" class="form-select">
+            <option value="" disabled selected>Please choose…</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+
+
         <!-- Container for "Other" Company (hidden by default) -->
         <div id="otherCompanyContainer" style="display: none">
           <label for="otherCompany" class="form-label">Please Specify Company</label>
@@ -313,6 +324,25 @@
           <label for="weight" class="form-label">What is the weight?</label>
           <input type="text" id="weight" name="Weight" class="form-control" placeholder="Enter the weight" />
         </div>
+
+        <!-- Woodfield: Extra fields when Loaded -->
+        <div class="mb-3" id="woodfieldDeliverySection" style="display:none">
+          <label for="woodfieldDeliveryDest" class="form-label">Delivery Destination</label>
+          <input type="text" id="woodfieldDeliveryDest" name="Delivery Destination" class="form-control"
+            placeholder="City / Facility / Address" />
+          <label for="woodfieldDeliveryDT" class="form-label mt-2">Delivery Date/Time</label>
+          <input type="datetime-local" id="woodfieldDeliveryDT" name="Delivery Date/Time" class="form-control" />
+        </div>
+
+        <div class="mb-3" id="woodfieldClass1Section" style="display:none">
+          <label for="woodfieldClass1" class="form-label">Is this a Class 1 load?</label>
+          <select id="woodfieldClass1" name="Class 1 Load?" class="form-select">
+            <option value="" disabled selected>Please choose…</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+
 
         <!-- RE Garrison: Destination & Customer Name (only if Loaded + RE Garrison) -->
         <div class="mb-3" id="destinationSection" style="display: none">
