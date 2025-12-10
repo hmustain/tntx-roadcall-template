@@ -293,53 +293,65 @@ document.addEventListener("DOMContentLoaded", function () {
     var minutes = String(now.getMinutes()).padStart(2, "0");
     var timeString = hours12 + ":" + minutes + " " + ampm;
 
-    // Header alerts
-    var regHeaderAlert = "";
-    if (data["Company"] === "RE Garrison") {
-      regHeaderAlert = `
-        <tr>
-          <th colspan="2"
-              style="border: 1px solid #000; padding: 8px;
-                     background-color: #fff3cd;
-                     color: #b10000; font-weight: 800; text-align: center;">
-            Please Send All Invoices To
-            <a href="mailto:Roadside@regarrison.com" style="color:#b10000; text-decoration: underline;">
-              Roadside@regarrison.com
-            </a>
-          </th>
-        </tr>
-      `;
-    }
+// Header alerts (report only)
+var regHeaderAlert = "";
+if (data["Company"] === "RE Garrison") {
+  regHeaderAlert = `
+    <tr>
+      <th colspan="2"
+          style="border: 1px solid #000; padding: 8px;
+                 background-color: #fff3cd;
+                 color: #b10000; font-weight: 800; text-align: center;">
+        Please Send All Invoices To
+        <a href="mailto:Roadside@regarrison.com" style="color:#b10000; text-decoration: underline;">
+          Roadside@regarrison.com
+        </a>
+      </th>
+    </tr>
+  `;
+}
 
-    // NEW: Woodfield Class 1 header alert if Class 1 = yes
-    var woodfieldHeaderAlert = "";
-    if (data["Company"] === "Woodfield" && (data["Class 1 Load?"] || "").toLowerCase() === "yes") {
-      woodfieldHeaderAlert = `
-        <tr>
-          <th colspan="2"
-              style="border: 1px solid #000; padding: 10px;
-                     background-color: #ffeb99; /* bright yellow */
-                     color: #b10000; font-weight: 900; text-transform: uppercase; text-align: center;">
-            CLASS 1 LOAD — CANNOT GO INTO A BUILDING • UNIT CANNOT MOVE • REPAIRS MUST BE DONE ON THE ROAD
-          </th>
-        </tr>
-      `;
-    }
+// NEW: Woodfield header alert (always add when Company = Woodfield)
+var woodfieldHeaderEmailAlert = "";
+if (data["Company"] === "Woodfield") {
+  woodfieldHeaderEmailAlert = `
+    <tr>
+      <th colspan="2"
+          style="border: 1px solid #000; padding: 10px;
+                 background-color: #fff3cd; /* yellow */
+                 color: #b10000;            /* bold red */
+                 font-weight: 900; text-align: center;">
+        PLEASE SEND ALL PO REQUESTS AND INVOICES TO
+        <a href="mailto:shopoffice@wdfe.com" style="color:#b10000; text-decoration: underline;">
+          shopoffice@wdfe.com
+        </a>.
+        THANK YOU!
+      </th>
+    </tr>
+  `;
+}
 
-    // Build table
-    var tableHtml = `
-      <table style="width:100%; border-collapse: collapse;">
-        <thead style="background-color: #d3d3de; color: #000;">
-          <tr><th colspan="2" style="border: 1px solid #000; padding: 8px; text-align: center;">${subjectLine}</th></tr>
-          ${regHeaderAlert}
-          ${woodfieldHeaderAlert}
-        </thead>
-        <tbody>
-          <tr>
-            <td style="border: 1px solid #000; padding: 8px; width: 35%; white-space: nowrap;">Date / Time</td>
-            <td style="border: 1px solid #000; padding: 8px; width: 65%; word-break: break-word;">${dateString} - ${timeString}</td>
-          </tr>
-    `;
+// Build table (now includes RE Garrison & Woodfield header rows)
+var tableHtml = `
+  <table style="width:100%; border-collapse: collapse;">
+    <thead style="background-color: #d3d3de; color: #000;">
+      <tr>
+        <th colspan="2" style="border: 1px solid #000; padding: 8px; text-align: center;">
+          ${subjectLine}
+        </th>
+      </tr>
+      ${regHeaderAlert}
+      ${woodfieldHeaderEmailAlert}
+    </thead>
+    <tbody>
+      <tr>
+        <td style="border: 1px solid #000; padding: 8px; width: 35%; white-space: nowrap;">Date / Time</td>
+        <td style="border: 1px solid #000; padding: 8px; width: 65%; word-break: break-word;">
+          ${dateString} - ${timeString}
+        </td>
+      </tr>
+`;
+
 
     // Add form fields
     Object.keys(data).forEach(function (key) {
