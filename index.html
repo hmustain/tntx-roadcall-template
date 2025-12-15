@@ -114,7 +114,7 @@
               Please select a company...
             </option>
             <option value="Big M">Big M</option>
-            <option value="C&W Leasing">C&W Leasing</option<option>
+            <option value="C&W Leasing">C&W Leasing</option>
               <!-- <option value="CCT">CCT</option> -->
             <option value="Dedicated Logistics">Dedicated Logistics</option>
             <option value="FedEx">FedEx</option>
@@ -136,22 +136,32 @@
             <option value="Other">Other</option>
           </select>
         </div>
-        <!--Driver Type Section (only for Big M) -->
+        <!-- Driver Type Section (only for Big M) -->
         <div id="driverTypeSection" style="display: none" class="mb-3">
-          <label class="form-label">Driver Type</label>
+          <label class="form-label fw-bold">
+            Driver Type <span class="text-danger">*</span>
+          </label>
+
           <div class="form-check">
             <input class="form-check-input" type="radio" name="driverType" id="companyDriver" value="Company Driver">
             <label class="form-check-label" for="companyDriver">
               Company Driver
             </label>
           </div>
+
           <div class="form-check">
             <input class="form-check-input" type="radio" name="driverType" id="ownerOperator" value="Owner Operator">
             <label class="form-check-label" for="ownerOperator">
               Owner Operator
             </label>
           </div>
+
+          <!-- Validation message -->
+          <div id="driverTypeError" class="text-danger mt-2 d-none">
+            Please select a Driver Type before continuing.
+          </div>
         </div>
+
         <!-- Accident question (only for RE Garrison) -->
         <div class="mb-3" id="accidentSection" style="display: none">
           <label for="accidentSelect" class="form-label">Is this an accident?</label>
