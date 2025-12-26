@@ -94,6 +94,27 @@ document.addEventListener("DOMContentLoaded", function () {
   // Insert driver banner above form
   formEl.parentNode.insertBefore(bigMFlagBanner, formEl);
 
+  // =========================================================
+  // ✅ NEW: RE GARRISON FLAG (ON-SCREEN ONLY, NOT IN REPORT)
+  // Trigger: Company = RE Garrison AND Truck # = 12422
+  // =========================================================
+  var regGarrisonFlagBanner = document.createElement("div");
+  regGarrisonFlagBanner.id = "regGarrisonFlagBanner";
+  regGarrisonFlagBanner.className = "alert alert-danger d-none";
+  regGarrisonFlagBanner.style.whiteSpace = "pre-wrap";
+  regGarrisonFlagBanner.style.fontWeight = "800";
+  regGarrisonFlagBanner.textContent =
+    "🚨 RE GARRISON – TRK 12422\nDO NOT APPROVE MAJOR REPAIRS. Must have approval from RE Garrison. (TIRES ARE OK)";
+
+  // Insert above form (same area as other banners)
+  formEl.parentNode.insertBefore(regGarrisonFlagBanner, formEl);
+
+  function updateREGarrisonFlagBanner() {
+    var isREG = companySelect.value === "RE Garrison";
+    var truckNumber = (truckInput.value || "").trim();
+    regGarrisonFlagBanner.classList.toggle("d-none", !(isREG && truckNumber === "12422"));
+  }
+
   // === Big M Tire Policy Banner (Step 8: Tires = Yes) ===
   var tireBreakdownSelect = document.getElementById("tireBreakdown");
   var tireQuestions = document.getElementById("tireQuestions");
@@ -203,6 +224,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Re-evaluate banners when company changes
     updateBigMFlagBanner();
+    updateREGarrisonFlagBanner();
     updateBigMTireBanner();
     updateWoodfieldClass1Banner();
   });
@@ -248,9 +270,19 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Driver banner listeners
-  companySelect.addEventListener("change", updateBigMFlagBanner);
-  truckInput.addEventListener("input", updateBigMFlagBanner);
+  companySelect.addEventListener("change", function () {
+    updateBigMFlagBanner();
+    updateREGarrisonFlagBanner();
+  });
+
+  truckInput.addEventListener("input", function () {
+    updateBigMFlagBanner();
+    updateREGarrisonFlagBanner();
+  });
+
+  // Initial run
   updateBigMFlagBanner();
+  updateREGarrisonFlagBanner();
 
   // Tire banner logic + tireQuestions visibility
   tireBreakdownSelect.addEventListener("change", function () {
@@ -434,6 +466,7 @@ document.addEventListener("DOMContentLoaded", function () {
       showStep(currentStep);
 
       updateBigMFlagBanner();
+      updateREGarrisonFlagBanner();
       updateBigMTireBanner();
       updateWoodfieldClass1Banner();
     });
@@ -478,6 +511,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (otherCompanyContainer) otherCompanyContainer.style.display = "none";
 
       bigMFlagBanner.classList.add("d-none");
+      regGarrisonFlagBanner.classList.add("d-none");
       bigMTireBanner.classList.add("d-none");
       woodfieldClass1Banner.classList.add("d-none");
 
