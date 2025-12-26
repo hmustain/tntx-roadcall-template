@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function () {
   regGarrisonFlagBanner.style.whiteSpace = "pre-wrap";
   regGarrisonFlagBanner.style.fontWeight = "800";
   regGarrisonFlagBanner.textContent =
-    "🚨 RE GARRISON – TRK 12422\nDO NOT APPROVE REPAIRS. Must have approval from RE Garrison.";
+    "🚨 RE GARRISON – TRK 12422\nDO NOT APPROVE MAJOR REPAIRS. Must have approval from RE Garrison. (TIRES ARE OK)";
 
   // Insert above form (same area as other banners)
   formEl.parentNode.insertBefore(regGarrisonFlagBanner, formEl);
