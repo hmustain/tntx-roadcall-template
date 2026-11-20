@@ -1,3 +1,8 @@
+// Helper: true for either Woodfield company ("Woodfield-INC" or "Woodfield-Transit Solutions")
+function isWoodfieldCompany(value) {
+  return value === "Woodfield-INC" || value === "Woodfield-Transit Solutions";
+}
+
 // Helper function: Show a dynamic section and (optionally) scroll it into view
 function showSection(sectionElement) {
   sectionElement.style.display = "block";
@@ -147,7 +152,7 @@ document.addEventListener("DOMContentLoaded", function () {
   formEl.parentNode.insertBefore(woodfieldClass1Banner, formEl);
 
   function updateWoodfieldClass1Banner() {
-    var isWoodfield = companySelect.value === "Woodfield";
+    var isWoodfield = isWoodfieldCompany(companySelect.value);
     var isLoaded = loadStatusSelect.value === "loaded";
     var class1Yes = woodfieldClass1 && woodfieldClass1.value === "yes";
     woodfieldClass1Banner.classList.toggle("d-none", !(isWoodfield && isLoaded && class1Yes));
@@ -220,7 +225,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (this.value === "Other") showSection(otherCompanyContainer);
     if (this.value === "Big M") showSection(driverTypeSection);
     if (this.value === "RE Garrison") accidentSection.style.display = "block";
-    if (this.value === "Woodfield" && woodfieldDODSection) showSection(woodfieldDODSection);
+    if (isWoodfieldCompany(this.value) && woodfieldDODSection) showSection(woodfieldDODSection);
 
     // Re-evaluate banners when company changes
     updateBigMFlagBanner();
@@ -239,7 +244,7 @@ document.addEventListener("DOMContentLoaded", function () {
   loadStatusSelect.addEventListener("change", function () {
     var isLoaded = this.value === "loaded";
     var isREGarrison = companySelect.value === "RE Garrison";
-    var isWoodfield = companySelect.value === "Woodfield";
+    var isWoodfield = isWoodfieldCompany(companySelect.value);
 
     // Load # section: show when loaded, but NOT for Woodfield
     loadNumberSection.style.display = isLoaded && !isWoodfield ? "block" : "none";
@@ -387,7 +392,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     var woodfieldHeaderEmailAlert = "";
-    if (data["Company"] === "Woodfield") {
+    if (isWoodfieldCompany(data["Company"])) {
       woodfieldHeaderEmailAlert = `
         <tr>
           <th colspan="2"
