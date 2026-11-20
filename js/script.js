@@ -225,7 +225,8 @@ document.addEventListener("DOMContentLoaded", function () {
     if (this.value === "Other") showSection(otherCompanyContainer);
     if (this.value === "Big M") showSection(driverTypeSection);
     if (this.value === "RE Garrison") accidentSection.style.display = "block";
-    if (isWoodfieldCompany(this.value) && woodfieldDODSection) showSection(woodfieldDODSection);
+    // DOD/Safe Transfer question: Woodfield-INC only (not Woodfield-Transit Solutions)
+    if (this.value === "Woodfield-INC" && woodfieldDODSection) showSection(woodfieldDODSection);
 
     // Re-evaluate banners when company changes
     updateBigMFlagBanner();
