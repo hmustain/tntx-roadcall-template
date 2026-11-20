@@ -3,6 +3,11 @@ function isWoodfieldCompany(value) {
   return value === "Woodfield-INC" || value === "Woodfield-Transit Solutions";
 }
 
+// Helper: DOD/Safe Transfer + Class 1 questions apply to Woodfield-INC only
+function needsSafeTransferQuestions(value) {
+  return value === "Woodfield-INC";
+}
+
 // Helper function: Show a dynamic section and (optionally) scroll it into view
 function showSection(sectionElement) {
   sectionElement.style.display = "block";
@@ -152,7 +157,7 @@ document.addEventListener("DOMContentLoaded", function () {
   formEl.parentNode.insertBefore(woodfieldClass1Banner, formEl);
 
   function updateWoodfieldClass1Banner() {
-    var isWoodfield = isWoodfieldCompany(companySelect.value);
+    var isWoodfield = needsSafeTransferQuestions(companySelect.value);
     var isLoaded = loadStatusSelect.value === "loaded";
     var class1Yes = woodfieldClass1 && woodfieldClass1.value === "yes";
     woodfieldClass1Banner.classList.toggle("d-none", !(isWoodfield && isLoaded && class1Yes));
@@ -221,12 +226,20 @@ document.addEventListener("DOMContentLoaded", function () {
     accidentLinkSection.style.display = "none";
     if (woodfieldDODSection) woodfieldDODSection.style.display = "none";
 
+    // Clear safe-transfer answers so they don't carry into the report when switching companies
+    if (!needsSafeTransferQuestions(this.value)) {
+      if (woodfieldDOD) woodfieldDOD.selectedIndex = 0;
+      if (woodfieldClass1) woodfieldClass1.selectedIndex = 0;
+    }
+    // Re-apply Step 6 visibility for the newly selected company
+    loadStatusSelect.dispatchEvent(new Event("change"));
+
     if (this.value === "FedEx") showSection(fedexDetails);
     if (this.value === "Other") showSection(otherCompanyContainer);
     if (this.value === "Big M") showSection(driverTypeSection);
     if (this.value === "RE Garrison") accidentSection.style.display = "block";
     // DOD/Safe Transfer question: Woodfield-INC only (not Woodfield-Transit Solutions)
-    if (this.value === "Woodfield-INC" && woodfieldDODSection) showSection(woodfieldDODSection);
+    if (needsSafeTransferQuestions(this.value) && woodfieldDODSection) showSection(woodfieldDODSection);
 
     // Re-evaluate banners when company changes
     updateBigMFlagBanner();
@@ -264,7 +277,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Woodfield: ONLY show Class 1 question when loaded
     if (woodfieldClass1Section) {
-      woodfieldClass1Section.style.display = isLoaded && isWoodfield ? "block" : "none";
+      woodfieldClass1Section.style.display =
+        isLoaded && needsSafeTransferQuestions(companySelect.value) ? "block" : "none";
     }
 
     // Customer request: NEVER show Woodfield delivery details anymore
@@ -317,6 +331,12 @@ document.addEventListener("DOMContentLoaded", function () {
     var formData = new FormData(this);
     var data = {};
     formData.forEach((value, key) => (data[key] = value));
+
+    // Safe-transfer fields only belong on Woodfield-INC reports
+    if (!needsSafeTransferQuestions(data["Company"])) {
+      delete data["DOD/Safe Transfer Unit?"];
+      delete data["Class 1 Load?"];
+    }
 
     if (data["Company"] === "Other") {
       data["Company"] = data["Other Company"] || "Other";
